@@ -1,7 +1,6 @@
 package cn.travellerr.make;
 
 import cn.hutool.core.util.RandomUtil;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -9,9 +8,8 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
-import java.util.Scanner;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class getPng {
     static String name;
@@ -24,15 +22,16 @@ public class getPng {
         return "https://cdnimg.gamekee.com/wiki2.0/images/w_304/h_240/829/43637/2022/6/" + url;
     }
 
-    public static void message(){
+    public static void message(int itemLevel) {
         try (InputStream inputStream = getPng.class.getClassLoader().getResourceAsStream("gift.json");
              Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
             if (scanner.hasNext()) {
                 String json = scanner.useDelimiter("\\A").next();
                 JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-                int star = RandomUtil.randomInt(1,40);
                 int id;
-                if(star == 40) {id = RandomUtil.randomInt(39,50);}
+                if (itemLevel == 40) {
+                    id = RandomUtil.randomInt(39, 50);
+                }
                 else {id = RandomUtil.randomInt(1,38);}
                 if (jsonObject.has(String.valueOf(id))) {
                     JsonObject giftObject = jsonObject.getAsJsonObject(String.valueOf(id));
