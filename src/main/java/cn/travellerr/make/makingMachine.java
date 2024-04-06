@@ -1,6 +1,7 @@
 package cn.travellerr.make;
 
 import cn.chahuyun.economy.utils.EconomyUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.utils.sqlUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -38,8 +39,8 @@ public class makingMachine {
 
     public static void createGift(Contact subject, User user, int money) {
         try {
-            //int time = RandomUtil.randomInt(10, 180);
-            int time = 1;
+            int time = RandomUtil.randomInt(10, 180);
+            //int time = 1;
 
             sqlUtil.updateInfo(user.getId(), false);
             if (!timesUp && isMaking) { //时间未到且未领取制造物品
