@@ -2,8 +2,7 @@ package cn.travellerr.event;
 
 import cn.travellerr.make.makingMachine;
 import cn.travellerr.utils.FavorUtil;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
+import cn.travellerr.utils.wtfUtil;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.MessageEvent;
@@ -14,8 +13,6 @@ import java.util.regex.Pattern;
 public class MessageEventListener extends SimpleListenerHost {
     @EventHandler
     public void onMessage(@NotNull MessageEvent event) {
-        User sender = event.getSender();
-        Contact subject = event.getSubject();
         String msg = event.getMessage().serializeToMiraiCode();
 
         switch (msg) {
@@ -35,12 +32,15 @@ public class MessageEventListener extends SimpleListenerHost {
             case "#查看好感度":
             case "#好感":
                 FavorUtil.checkFavor(event);
+                return;
+            case "#盒我":
+                wtfUtil.use(event);
+                return;
         }
         String make = "#制造 (\\d+)|#制作 (\\d+)";
         if(Pattern.matches(make, msg))
         {
             makingMachine.use(event);
-            return;
         }
 
        /* String Cheat = "#作弊 (\\d+)";
