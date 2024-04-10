@@ -12,7 +12,7 @@ public class sqlUtil {
     public static int itemLevel;
     public static boolean isMaking;
     public static boolean timesUp;
-
+    public static int needTime;
     static String directory = "./data/cn.travellerr.Favorability/";
 
     public static void startMake(long qqNumber, int money, long time) {
@@ -96,6 +96,7 @@ public class sqlUtil {
                     long currentTimeStamp = System.currentTimeMillis() / 1000;
                     System.out.println(currentTimeStamp);
                     System.out.println(time);
+                    needTime = (int) (makeTime - (currentTimeStamp - time)) / 60;
                     if (currentTimeStamp - time >= makeTime) {
                         if (clear) {
                             clearQueue(conn, qqNumber);

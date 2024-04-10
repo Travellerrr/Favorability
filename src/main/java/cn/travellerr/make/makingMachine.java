@@ -25,16 +25,24 @@ public class makingMachine {
         String[] s = code.split(" ");
         int money;
         money = Integer.parseInt(s[s.length - 1]);
-        if(!check(user, money)) {
+        if (!checkEnoughMoney(money)) {
+            subject.sendMessage(new At(user.getId()).plus("你支出的费用太少啦！\n没有商家愿意接单"));
+            return;
+        }
+        if (!checkRealMoney(user, money)) {
             subject.sendMessage(new At(user.getId()).plus(" 你的金钱还不够！"));
             return;
         }
         createGift(subject, user, money);
     }
 
-    public static boolean check(User user, int money) {
+    public static boolean checkRealMoney(User user, int money) {
         double RealMoney = EconomyUtil.getMoneyByUser(user);
         return RealMoney >= money;
+    }
+
+    public static boolean checkEnoughMoney(int money) {
+        return money >= 30;
     }
 
     public static void createGift(Contact subject, User user, int money) {
@@ -52,7 +60,8 @@ public class makingMachine {
                 return;
             }
             sqlUtil.startMake(user.getId(), money, time * 60L);
-            subject.sendMessage(new At(user.getId()).plus(String.format("开始制造，时间：%d 分钟 \n 请在时间到后发送\"#查看制造\"获取物品", time)));
+            subject.sendMessage(new At(user.getId()).plus(String.format("开始制造，时间：%d 分钟，物品等级: %s \n 请在时间到后发送\"#查看制造\"获取物品", time, itemLevel)));
+            EconomyUtil.plusMoneyToUser(user, -money);
             //subject.sendMessage(new At(user.getId()).plus("啊嘞？你还没有开始制造物品吧！"));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -89,7 +98,7 @@ public class makingMachine {
                 return;
             }
             if (!timesUp && isMaking) {
-                subject.sendMessage(new At(user.getId()).plus("还没制作完成哦~"));
+                subject.sendMessage(new At(user.getId()).plus(String.format("还没制作完成哦~还剩%d分钟\n预计制造物品等级: %d", needTime, itemLevel)));
                 return;
             }
             subject.sendMessage(new At(user.getId()).plus("制造队列为空~"));
