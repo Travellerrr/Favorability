@@ -31,8 +31,8 @@ object CheckLove :
     @Handler
     fun useLove(context: CommandContext) {
         val subject: Contact? = context.sender.subject
-        val sender: User? = context.sender.user;
-        val bot: Bot? = context.sender.bot;
+        val sender: User? = context.sender.user
+        val bot: Bot? = context.sender.bot
         FavorUtil.checkFavor(subject, sender, bot)
     }
 }
@@ -74,3 +74,22 @@ object ReloadConfig : SimpleCommand(Favorability.INSTANCE, "Favorability", descr
         }
     }
 }
+
+object GetLoveList : SimpleCommand(
+    Favorability.INSTANCE,
+    "getLoveList",
+    "好感度排行",
+    "好感度排行榜",
+    "好感排行",
+    "好感排行榜",
+    description = "重载配置"
+) {
+    @Handler
+    fun reload(context: CommandContext) {
+        val subject: Contact? = context.sender.subject
+        val group: Group? = context.sender.getGroupOrNull()
+        FavorUtil.getLoveList(subject, group)
+    }
+}
+
+

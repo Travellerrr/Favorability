@@ -2,14 +2,19 @@ package cn.travellerr.utils;
 
 import cn.travellerr.config.Config;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.message.data.At;
+import net.mamoe.mirai.message.data.ForwardMessageBuilder;
+import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.PlainText;
 
-import java.nio.file.Paths;
-import java.sql.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static cn.travellerr.utils.sqlUtil.getListSql;
 
 
 public class FavorUtil {
@@ -22,7 +27,7 @@ public class FavorUtil {
     private static String FavorMsg(int level, String SenseiName) {
         Config config = Config.INSTANCE;
         List<String> msgList = config.getLoveMessage();
-        int index = level % config.getChangeLevel();
+        int index = level / config.getChangeLevel();
         if (index > msgList.size()) index = msgList.size();
         String msg = msgList.get(index);
         return ReplaceString(msg, SenseiName);
@@ -63,30 +68,60 @@ public class FavorUtil {
         return level;
     }
 
-    public static void getList(MessageEvent event) {
-        String getSql = "SELECT exp FROM Favourite ORDER BY exp DESC;";
-        String dbName = "favorability.db"; // 数据库文件名
-        String dbPath = Paths.get("./data/cn.travellerr.Favorability/", dbName).toString();
-        String url = "jdbc:sqlite:" + dbPath;
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("出错了~", e);
+    private static List<Integer> castIntList(List<?> list) {
+        List<Integer> result = new ArrayList<>();
+        for (Object element : list) {
+            result.add((Integer) element);
         }
-        try (Connection conn = DriverManager.getConnection(url)) {
-            PreparedStatement pstmt = conn.prepareStatement(getSql);
-            pstmt.executeUpdate();
-            pstmt.close();
-
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                int before = rs.getInt("exp");
-            }
-            rs.close();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return result;
     }
 
+    private static List<Long> castLongList(List<?> list) {
+        List<Long> result = new ArrayList<>();
+        for (Object element : list) {
+            result.add((Long) element);
+        }
+        return result;
+    }
+
+    public static void getLoveList(Contact subject, Group group) {
+        // 获取数据
+        Map<String, List<?>> info = getListSql();
+        List<Integer> LoveExpList = castIntList(info.get("expList"));
+        List<Long> uidName = castLongList(info.get("uidName"));
+
+        // 构建消息转发器
+        ForwardMessageBuilder forwardMessage = new ForwardMessageBuilder(subject);
+
+        // 获取群成员列表
+        ContactList<NormalMember> contactList = group.getMembers();
+        List<NormalMember> normalMemberList = contactList.stream().toList();
+
+        // 过滤并排序群成员
+        List<User> users = normalMemberList.stream()
+                .filter(member -> uidName.contains(member.getId()))
+                .sorted(Comparator.comparingInt(member -> uidName.indexOf(member.getId())))
+                .collect(Collectors.toList());
+
+        // 确定循环上限
+        int size = Math.min(Math.min(LoveExpList.size(), users.size()), 100);
+
+        // 遍历并发送消息
+        for (int i = 0; i < size; i++) {
+            // 构建消息内容
+            String nickname = users.get(i).getNick();
+            String messageContent = "这位是 " + nickname + " Sensei,\n阿洛娜对Ta的好感度为: " + FavorLevel(LoveExpList.get(i));
+            Message message = new PlainText(messageContent);
+
+            // 添加消息到转发器
+            forwardMessage.add(users.get(i), message);
+        }
+
+        // 发送转发的消息
+        subject.sendMessage(forwardMessage.build());
+    }
+
+
 }
+
+

@@ -7,6 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class sqlUtil {
     public static int itemLevel;
@@ -251,4 +255,51 @@ public class sqlUtil {
         }
         return 0;
     }
+
+    public static Map<String, List<?>> getListSql() {
+        // SQL查询语句
+        String getSql = "SELECT exp, QQ FROM Favourite ORDER BY exp DESC;";
+
+        // 数据库文件名和路径
+        String dbName = "favorability.db";
+        String dbPath = Paths.get("./data/cn.travellerr.Favorability/", dbName).toString();
+        String url = "jdbc:sqlite:" + dbPath;
+
+        // 存储查询结果的列表
+        List<Integer> expList = new ArrayList<>();
+        List<Long> uidName = new ArrayList<>();
+
+        try {
+            // 加载SQLite驱动
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("出错了~", e);
+        }
+
+        try (Connection conn = DriverManager.getConnection(url)) {
+            // 创建PreparedStatement并执行查询
+            PreparedStatement pstmt = conn.prepareStatement(getSql);
+            ResultSet rs = pstmt.executeQuery();
+
+            // 遍历结果集并将数据添加到列表中
+            while (rs.next()) {
+                expList.add(rs.getInt("exp"));
+                uidName.add(rs.getLong("QQ"));
+            }
+
+            // 关闭结果集和PreparedStatement
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 构建包含查询结果的Map
+        Map<String, List<?>> information = new HashMap<>();
+        information.put("expList", expList);
+        information.put("uidName", uidName);
+
+        return information;
+    }
+
 }

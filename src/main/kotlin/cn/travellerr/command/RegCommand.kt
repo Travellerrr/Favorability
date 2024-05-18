@@ -10,5 +10,6 @@ object RegCommand {
         CommandManager.registerCommand(Open)
         CommandManager.registerCommand(OpenOthers)
         CommandManager.registerCommand(ReloadConfig)
+        CommandManager.registerCommand(GetLoveList)
     }
 }
