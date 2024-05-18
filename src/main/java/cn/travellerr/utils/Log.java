@@ -19,5 +19,10 @@ public class Log {
 
     public static void error(String msg, IOException e) {
         log.error(name + msg);
+        e.fillInStackTrace();
+    }
+
+    public static void error(String msg) {
+        log.error(name + msg);
     }
 }

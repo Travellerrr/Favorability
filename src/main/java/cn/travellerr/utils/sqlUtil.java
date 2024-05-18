@@ -112,7 +112,7 @@ public class sqlUtil {
         return false;
     }
 
-    private static void clearQueue(Connection conn, long qqNumber) throws SQLException {
+    private static void clearQueue(Connection conn, long qqNumber) {
         String updateSql = "UPDATE Favourite SET Time = ?, makeTime = ?, itemLevel = ?, isMaking=? WHERE QQ = ?";
         try (PreparedStatement insertStmt = conn.prepareStatement(updateSql)) {
             // 设置参数值
@@ -218,6 +218,7 @@ public class sqlUtil {
                 insertStmt.setLong(1, before + exp);
                 insertStmt.setLong(2, qqNumber);
                 insertStmt.executeUpdate();
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

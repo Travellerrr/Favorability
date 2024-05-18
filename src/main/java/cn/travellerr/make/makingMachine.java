@@ -2,35 +2,32 @@ package cn.travellerr.make;
 
 import cn.chahuyun.economy.utils.EconomyUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.travellerr.config.Config;
 import cn.travellerr.utils.sqlUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
-import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.utils.ExternalResource;
 
 import java.net.URL;
+import java.util.List;
 
+import static cn.travellerr.Favorability.config;
 import static cn.travellerr.make.getPng.*;
 import static cn.travellerr.utils.sqlUtil.*;
 
 public class makingMachine {
-    public static void use(MessageEvent event) {
-        Contact subject = event.getSubject();
-        MessageChain message = event.getMessage();
-        User user = event.getSender();
-        String code = message.serializeToMiraiCode();
-        String[] s = code.split(" ");
-        int money;
-        money = Integer.parseInt(s[s.length - 1]);
+    public static void use(Contact subject, User user, Long coin) {
+        int money = Math.toIntExact(coin);
         if (!checkEnoughMoney(money)) {
-            subject.sendMessage(new At(user.getId()).plus("你支出的费用太少啦！\n没有商家愿意接单"));
+            List<String> deniedMessageList = config.getNotEnough();
+            int getMessage = RandomUtil.randomInt(0, deniedMessageList.size() - 1);
+            subject.sendMessage(new At(user.getId()).plus("你支出的费用太少啦！" + deniedMessageList.get(getMessage)));
             return;
         }
         if (!checkRealMoney(user, money)) {
-            subject.sendMessage(new At(user.getId()).plus(" 你的金钱还不够！"));
+            subject.sendMessage(new At(user.getId()).plus(String.format(" 你掏出了%f枚金币，导致了物质坍缩形成了黑洞，宇宙毁灭了……", EconomyUtil.getMoneyByUser(user) - money)));
             return;
         }
         createGift(subject, user, money);
@@ -42,12 +39,12 @@ public class makingMachine {
     }
 
     public static boolean checkEnoughMoney(int money) {
-        return money >= 30;
+        return money >= Config.INSTANCE.getAtLeastCoin();
     }
 
     public static void createGift(Contact subject, User user, int money) {
         try {
-            int time = RandomUtil.randomInt(10, 180);
+            int time = RandomUtil.randomInt(config.getAtLeastMin(), config.getAtMostMin());
             //int time = 1;
 
             sqlUtil.updateInfo(user.getId(), false);
@@ -62,17 +59,13 @@ public class makingMachine {
             sqlUtil.startMake(user.getId(), money, time * 60L);
             subject.sendMessage(new At(user.getId()).plus(String.format("开始制造，时间：%d 分钟，物品等级: %s \n 请在时间到后发送\"#查看制造\"获取物品", time, itemLevel)));
             EconomyUtil.plusMoneyToUser(user, -money);
-            //subject.sendMessage(new At(user.getId()).plus("啊嘞？你还没有开始制造物品吧！"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void checkItem(MessageEvent event) {
+    public static void checkItem(Contact subject, User user) {
         try {
-            Contact subject = event.getSubject();
-            MessageChain message = event.getMessage();
-            User user = event.getSender();
             sqlUtil.updateInfo(user.getId(), true);
             if (timesUp && isMaking) { //制造完毕且未领取物品
                 message(itemLevel);
