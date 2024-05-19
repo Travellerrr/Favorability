@@ -1,6 +1,6 @@
 package cn.travellerr.utils;
 
-import cn.travellerr.config.Config;
+import cn.travellerr.config.PluginConfig;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.message.data.At;
@@ -14,34 +14,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static cn.travellerr.Favorability.config;
+import static cn.travellerr.Favorability.msgConfig;
+import static cn.travellerr.utils.ReplaceMsg.Replace;
 import static cn.travellerr.utils.sqlUtil.getListSql;
 
 
 public class FavorUtil {
     public static void checkFavor(Contact subject, User user, Bot bot) {
         int exp = sqlUtil.getExp(user.getId());
-
-        subject.sendMessage(new At(user.getId()).plus(String.format("\n%s对你的好感度为: %d\n%s", bot.getNick(), FavorLevel(exp), FavorMsg(FavorLevel(exp), user.getNick()))));
+        String originMsg = msgConfig.getCheckLove();
+        originMsg = Replace(originMsg, "%成员%", user.getNick());
+        originMsg = Replace(originMsg, "%机器人%", bot.getNick());
+        originMsg = Replace(originMsg, "%好感度%", FavorLevel(exp));
+        originMsg = Replace(originMsg, "%好感信息%", FavorMsg(FavorLevel(exp), user.getNick()));
+        subject.sendMessage(new At(user.getId()).plus("\n").plus(originMsg));
+        //subject.sendMessage(new At(user.getId()).plus(String.format("\n%s对你的好感度为: %d\n%s", bot.getNick(), FavorLevel(exp), FavorMsg(FavorLevel(exp), user.getNick()))));
     }
 
     private static String FavorMsg(int level, String SenseiName) {
-        Config config = Config.INSTANCE;
-        List<String> msgList = config.getLoveMessage();
+        PluginConfig config = PluginConfig.INSTANCE;
+        List<String> msgList = msgConfig.getLoveMessage();
         int index = level / config.getChangeLevel();
         if (index > msgList.size()) index = msgList.size();
         String msg = msgList.get(index);
-        return ReplaceString(msg, SenseiName);
-    }
-
-    /*
-     * 变量替换
-     */
-    private static String ReplaceString(String msg, String Name) {
-        Config config = Config.INSTANCE;
-        String suffix = config.getSuffix();
-        String replaced = msg.replace("%成员%", Name);
-        replaced = replaced.replace("%后缀%", suffix);
-        return replaced;
+        msg = Replace(msg, "%成员%", SenseiName);
+        return Replace(msg, "%后缀%", config.getSuffix());
     }
 
 
@@ -49,11 +47,7 @@ public class FavorUtil {
      * 计算好感度等级
      */
     private static int FavorLevel(int exp) {
-        int[] thresholds = {15, 45, 75, 110, 145, 180, 220, 260, 300, 360,
-                450, 555, 675, 815, 975, 1155, 1360, 1590, 1845, 2130, 2445,
-                2790, 3165, 3575, 4020, 4500, 5020, 5580, 6180, 6825, 7515,
-                8250, 9030, 9860, 10740, 11670, 12655, 13695, 14790, 15945,
-                17160, 18435, 19770, 21170, 22635, 24165, 25765, 27435, 29175};
+        int[] thresholds = config.getLevelList();
         int level = 1;
         for (int threshold : thresholds) {
             if (exp >= threshold) {
@@ -63,7 +57,7 @@ public class FavorUtil {
             }
         }
         if (level > 50) {
-            level = 50 + (exp - 29175) / 1810;
+            level = 50 + (exp - 29175) / config.getPerLevel();
         }
         return level;
     }
@@ -110,7 +104,14 @@ public class FavorUtil {
         for (int i = 0; i < size; i++) {
             // 构建消息内容
             String nickname = users.get(i).getNick();
-            String messageContent = "这位是 " + nickname + " Sensei,\n阿洛娜对Ta的好感度为: " + FavorLevel(LoveExpList.get(i));
+            String messageContent = msgConfig.getGroupLoveMsg();//"这位是 " + nickname + " Sensei,\n阿洛娜对Ta的好感度为: " + FavorLevel(LoveExpList.get(i));
+
+            //%成员% %后缀%,
+            //%机器人%%好感%
+            messageContent = Replace(messageContent, "%成员%", nickname);
+            messageContent = Replace(messageContent, "%后缀%", config.getSuffix());
+            messageContent = Replace(messageContent, "%机器人%", subject.getBot().getNick());
+            messageContent = Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
             Message message = new PlainText(messageContent);
 
             // 添加消息到转发器
@@ -121,6 +122,40 @@ public class FavorUtil {
         subject.sendMessage(forwardMessage.build());
     }
 
+
+    public static void getAllLoveList(Contact subject) {
+        // 获取数据
+        Map<String, List<?>> info = getListSql();
+        List<Integer> LoveExpList = castIntList(info.get("expList"));
+        List<Long> uidName = castLongList(info.get("uidName"));
+
+        // 构建消息转发器
+        ForwardMessageBuilder forwardMessage = new ForwardMessageBuilder(subject);
+
+        // 确定循环上限
+        int size = Math.min(LoveExpList.size(), 100);
+        String suffix = config.getSuffix();
+        // 遍历并发送消息
+        for (int i = 0; i < size; i++) {
+
+            String messageContent = msgConfig.getTotalLoveMsg();
+
+            messageContent = Replace(messageContent, "%成员%", uidName.get(i));
+            messageContent = Replace(messageContent, "%机器人%", subject.getBot().getNick());
+            messageContent = Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
+            messageContent = Replace(messageContent, "%后缀%", suffix);
+            messageContent = Replace(messageContent, "%排名%", (i + 1));
+
+
+            Message message = new PlainText(messageContent);
+
+            // 添加消息到转发器
+            forwardMessage.add(uidName.get(i), "第" + (i + 1) + "名" + config.getSuffix(), message);
+        }
+
+        // 发送转发的消息
+        subject.sendMessage(forwardMessage.build());
+    }
 
 }
 

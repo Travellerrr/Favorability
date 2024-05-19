@@ -4,21 +4,18 @@ import net.mamoe.mirai.console.data.AutoSavePluginConfig
 import net.mamoe.mirai.console.data.ValueDescription
 import net.mamoe.mirai.console.data.value
 
-object Config : AutoSavePluginConfig("config") {
-    @ValueDescription("制造至少消耗金币\n")
-    val atLeastCoin: Int by value(30)
+object TipsConfig : AutoSavePluginConfig("MsgConfig") {
+    @ValueDescription("好感度查看\n\"%成员%\"该成员名称\n\"%机器人%\"机器人名称\n\"%好感%\"好感度\n\"%好感信息%\"好感度消息")
+    val checkLove by value("%机器人%对你的好感度为: %好感度%\n%好感信息%")
 
-    @ValueDescription("至少需要多久制造/分钟\n")
-    val atLeastMin: Int by value(10)
 
-    @ValueDescription("至多需要多久制造/分钟\n")
-    val atMostMin: Int by value(180)
+    @ValueDescription("群好感度排行信息\n\"%成员%\"该成员名称\n\"%机器人%\"机器人名称\n\"%好感%\"好感度\n\"%后缀%\"设置的后缀\n")
+    val groupLoveMsg by value("这位是%成员% %后缀%,\n%机器人%对Ta的好感度为: %好感%")
 
-    @ValueDescription("人物后缀\n")
-    val suffix: String by value("Sensei")
+    @ValueDescription("全体好感度排行信息\n\"%成员%\"该成员QQ号\n\"%机器人%\"机器人名称\n\"%好感%\"好感度\n\"%后缀%\"设置的后缀\n\"%排名%\"当前排名")
+    val totalLoveMsg by value("第 %排名% 名 %后缀%, \n %机器人% 对Ta的好感度为: %好感")
 
-    @ValueDescription("每多少级改变一次好感度消息\n")
-    val changeLevel: Int by value(5)
+    //第" + (i+1) + "名"+config.getSuffix()+",\n"+subject.getBot().getNick()+"对Ta的好感度为: " + FavorLevel(LoveExpList.get(i))
 
     @ValueDescription("好感度消息，每 \"changeLevel\" 级一条消息\n")
     val LoveMessage by value(

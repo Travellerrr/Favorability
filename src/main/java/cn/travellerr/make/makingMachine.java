@@ -2,7 +2,7 @@ package cn.travellerr.make;
 
 import cn.chahuyun.economy.utils.EconomyUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.travellerr.config.Config;
+import cn.travellerr.config.PluginConfig;
 import cn.travellerr.utils.sqlUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.List;
 
 import static cn.travellerr.Favorability.config;
+import static cn.travellerr.Favorability.msgConfig;
 import static cn.travellerr.make.getPng.*;
 import static cn.travellerr.utils.sqlUtil.*;
 
@@ -21,7 +22,7 @@ public class makingMachine {
     public static void use(Contact subject, User user, Long coin) {
         int money = Math.toIntExact(coin);
         if (!checkEnoughMoney(money)) {
-            List<String> deniedMessageList = config.getNotEnough();
+            List<String> deniedMessageList = msgConfig.getNotEnough();
             int getMessage = RandomUtil.randomInt(0, deniedMessageList.size() - 1);
             subject.sendMessage(new At(user.getId()).plus("你支出的费用太少啦！" + deniedMessageList.get(getMessage)));
             return;
@@ -33,16 +34,16 @@ public class makingMachine {
         createGift(subject, user, money);
     }
 
-    public static boolean checkRealMoney(User user, int money) {
+    private static boolean checkRealMoney(User user, int money) {
         double RealMoney = EconomyUtil.getMoneyByUser(user);
         return RealMoney >= money;
     }
 
-    public static boolean checkEnoughMoney(int money) {
-        return money >= Config.INSTANCE.getAtLeastCoin();
+    private static boolean checkEnoughMoney(int money) {
+        return money >= PluginConfig.INSTANCE.getAtLeastCoin();
     }
 
-    public static void createGift(Contact subject, User user, int money) {
+    private static void createGift(Contact subject, User user, int money) {
         try {
             int time = RandomUtil.randomInt(config.getAtLeastMin(), config.getAtMostMin());
             //int time = 1;

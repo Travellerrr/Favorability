@@ -1,7 +1,8 @@
 package cn.travellerr.command
 
 import cn.travellerr.Favorability
-import cn.travellerr.config.Config
+import cn.travellerr.config.PluginConfig
+import cn.travellerr.config.TipsConfig
 import cn.travellerr.make.makingMachine
 import cn.travellerr.utils.FavorUtil
 import cn.travellerr.utils.wtfUtil
@@ -69,7 +70,8 @@ object ReloadConfig : SimpleCommand(Favorability.INSTANCE, "Favorability", descr
     @Handler
     suspend fun reload(sender: CommandSender, msg: String) {
         if (msg == "reload") {
-            Favorability.INSTANCE.reloadPluginConfig(Config)
+            Favorability.INSTANCE.reloadPluginConfig(TipsConfig)
+            Favorability.INSTANCE.reloadPluginConfig(PluginConfig)
             sender.sendMessage("重载已完成")
         }
     }
@@ -82,13 +84,29 @@ object GetLoveList : SimpleCommand(
     "好感度排行榜",
     "好感排行",
     "好感排行榜",
-    description = "重载配置"
+    description = "本群好感排行"
 ) {
     @Handler
     fun reload(context: CommandContext) {
         val subject: Contact? = context.sender.subject
         val group: Group? = context.sender.getGroupOrNull()
         FavorUtil.getLoveList(subject, group)
+    }
+}
+
+object GetAllLoveList : SimpleCommand(
+    Favorability.INSTANCE,
+    "getAllLoveList",
+    "好感度全排行",
+    "好感度全排行榜",
+    "好感全排行",
+    "好感全排行榜",
+    description = "全部好感排行"
+) {
+    @Handler
+    fun reload(context: CommandContext) {
+        val subject: Contact? = context.sender.subject
+        FavorUtil.getAllLoveList(subject)
     }
 }
 
