@@ -12,7 +12,7 @@ public final class Favorability extends JavaPlugin {
     public static TipsConfig msgConfig;
 
     private Favorability() {
-        super(new JvmPluginDescriptionBuilder("cn.travellerr.Favorability", "1.0.0")
+        super(new JvmPluginDescriptionBuilder("cn.travellerr.Favorability", "1.0.1")
                 .name("Favorability")
                 .info("好感度")
                 .author("Travellerr")
