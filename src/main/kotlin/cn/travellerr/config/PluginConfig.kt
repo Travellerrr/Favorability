@@ -5,6 +5,9 @@ import net.mamoe.mirai.console.data.ValueDescription
 import net.mamoe.mirai.console.data.value
 
 object PluginConfig : AutoSavePluginConfig("config") {
+    @ValueDescription("使用经济名称\n0 :  HuYanEconomy\n 1 : MiraiDailySign")
+    val economyName: Int by value(0)
+
     @ValueDescription("制造至少消耗金币\n")
     val atLeastCoin: Int by value(30)
 

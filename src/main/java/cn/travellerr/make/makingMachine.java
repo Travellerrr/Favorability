@@ -1,8 +1,9 @@
 package cn.travellerr.make;
 
-import cn.chahuyun.economy.utils.EconomyUtil;
+//import cn.chahuyun.economy.utils.EconomyUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.config.PluginConfig;
+import cn.travellerr.utils.EconomyUtil;
 import cn.travellerr.utils.sqlUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -28,14 +29,14 @@ public class makingMachine {
             return;
         }
         if (!checkRealMoney(user, money)) {
-            subject.sendMessage(new At(user.getId()).plus(String.format(" 你掏出了%f枚金币，导致了物质坍缩形成了黑洞，宇宙毁灭了……", EconomyUtil.getMoneyByUser(user) - money)));
+            subject.sendMessage(new At(user.getId()).plus(String.format(" 你掏出了%f枚金币，导致了物质坍缩形成了黑洞，宇宙毁灭了……", EconomyUtil.getMoney(user) - money)));
             return;
         }
         createGift(subject, user, money);
     }
 
     private static boolean checkRealMoney(User user, int money) {
-        double RealMoney = EconomyUtil.getMoneyByUser(user);
+        double RealMoney = cn.travellerr.utils.EconomyUtil.getMoney(user);
         return RealMoney >= money;
     }
 
@@ -59,7 +60,7 @@ public class makingMachine {
             }
             sqlUtil.startMake(user.getId(), money, time * 60L);
             subject.sendMessage(new At(user.getId()).plus(String.format("开始制造，时间：%d 分钟，物品等级: %s \n 请在时间到后发送\"#查看制造\"获取物品", time, itemLevel)));
-            EconomyUtil.plusMoneyToUser(user, -money);
+            EconomyUtil.plusMoney(user, -money);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

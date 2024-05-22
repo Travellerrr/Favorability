@@ -16,6 +16,7 @@ dependencies {
     compileOnly "xyz.cssxsh.mirai:mirai-hibernate-plugin:2.8.0"
     compileOnly "xyz.cssxsh.mirai:mirai-economy-core:1.0.6"
     compileOnly files("./libs/HuYanEconomy-0.1.16.jar")
+    compileOnly files("./libs/MiraiDailySign-0.1.1.mirai2.jar")
 
     implementation 'com.google.code.gson:gson:2.9.1'
     implementation 'cn.hutool:hutool-all:5.8.25'

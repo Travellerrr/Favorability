@@ -4,6 +4,7 @@ import cn.travellerr.Favorability
 import cn.travellerr.config.PluginConfig
 import cn.travellerr.config.TipsConfig
 import cn.travellerr.make.makingMachine
+import cn.travellerr.utils.EconomyUtil
 import cn.travellerr.utils.FavorUtil
 import cn.travellerr.utils.wtfUtil
 import net.mamoe.mirai.Bot
@@ -72,6 +73,7 @@ object ReloadConfig : SimpleCommand(Favorability.INSTANCE, "Favorability", descr
         if (msg == "reload") {
             Favorability.INSTANCE.reloadPluginConfig(TipsConfig)
             Favorability.INSTANCE.reloadPluginConfig(PluginConfig)
+            EconomyUtil.init()
             sender.sendMessage("重载已完成")
         }
     }
@@ -93,7 +95,6 @@ object GetLoveList : SimpleCommand(
         FavorUtil.getLoveList(subject, group)
     }
 }
-
 object GetAllLoveList : SimpleCommand(
     Favorability.INSTANCE,
     "getAllLoveList",
@@ -109,5 +110,18 @@ object GetAllLoveList : SimpleCommand(
         FavorUtil.getAllLoveList(subject)
     }
 }
+
+/*object TestCommand : SimpleCommand(
+    Favorability.INSTANCE,
+    "test",
+    description = "测试"
+) {
+    @Handler
+    fun reload(context: CommandContext) {
+        val subject: Contact? = context.sender.subject
+        val user : User? = context.sender.user;
+        EconomyUtil.register(user, subject)
+    }
+}*/
 
 
