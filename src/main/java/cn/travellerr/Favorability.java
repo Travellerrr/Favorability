@@ -6,18 +6,22 @@ import cn.travellerr.config.PluginConfig;
 import cn.travellerr.config.TipsConfig;
 import cn.travellerr.utils.EconomyUtil;
 import cn.travellerr.utils.checkDepends;
+import cn.travellerr.utils.checkLatestVersion;
 import cn.travellerr.utils.copyGiftJson;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import top.mrxiaom.mirai.dailysign.MiraiDailySign;
 
+import static cn.travellerr.cronJob.CheckVersionKt.cronJob;
+
 public final class Favorability extends JavaPlugin {
     public static final Favorability INSTANCE = new Favorability();
     public static PluginConfig config;
     public static TipsConfig msgConfig;
+    public static final String version = "1.0.2";
 
     private Favorability() {
-        super(new JvmPluginDescriptionBuilder("cn.travellerr.Favorability", "1.0.1")
+        super(new JvmPluginDescriptionBuilder("cn.travellerr.Favorability", version)
                 .name("Favorability")
                 .info("好感度")
                 .author("Travellerr")
@@ -49,7 +53,8 @@ public final class Favorability extends JavaPlugin {
         RegCommand.INSTANCE.registerCommand();
         copyGiftJson.copy();
         getLogger().info("插件已加载！!");
-
+        checkLatestVersion.init();
+        cronJob();
 
     }
 }
