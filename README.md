@@ -16,19 +16,23 @@
 |        `/查看制造`         |            查看制造队列             |
 |        `/查看好感度`        |          查看机器人对你的好感度          |
 | `/Favorability reload` |             重载配置              |
+|        `/好感排行`         |       查看**本群**的机器人好感排行        |
+|        `/好感全排行`        |       查看**全部**的机器人好感排行        |
 |       `/盒 [@某人]`       | 发送被@的人的QQ个人信息（just a kidding) |
 |         `/盒我`          | 发送你自己的QQ个人信息（just a kidding)  |
 
 ## 权限节点
 
-|           指令           |                       权限节点                        |
-|:----------------------:|:-------------------------------------------------:|
-|       `/制造 [金币]`       |   `cn.travellerr.favorability.command.makeitem`   |
-|        `/查看制造`         |  `cn.travellerr.favorability.command.checkmake`   |
-|        `/查看好感度`        |  `cn.travellerr.favorability.command.checklove`   |
-| `/Favorability reload` | `cn.travellerr.favorability.command.favorability` |
-|       `/盒 [@某人]`       |   `cn.travellerr.favorability.command.doxxing`    |
-|         `/盒我`          |  `cn.travellerr.favorability.command.doxxingme`   |
+|           指令           |                        权限节点                         |
+|:----------------------:|:---------------------------------------------------:|
+|       `/制造 [金币]`       |    `cn.travellerr.favorability.command.makeitem`    |
+|        `/查看制造`         |   `cn.travellerr.favorability.command.checkmake`    |
+|        `/查看好感度`        |   `cn.travellerr.favorability.command.checklove`    |
+|        `/好感排行`         |  `cn.travellerr.favorability.command.getlovelist`   |
+|        `/好感全排行`        | `cn.travellerr.favorability.command.getalllovelist` |
+| `/Favorability reload` |  `cn.travellerr.favorability.command.favorability`  |
+|       `/盒 [@某人]`       |    `cn.travellerr.favorability.command.doxxing`     |
+|         `/盒我`          |   `cn.travellerr.favorability.command.doxxingme`    |
 
 ## 配置
 
