@@ -1,5 +1,7 @@
 package cn.travellerr.utils;
 
+import cn.travellerr.Favorability;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -10,7 +12,7 @@ public class copyGiftJson {
     public static void copy() {
         Path path = Path.of("./data/cn.travellerr.Favorability/gift.json");
         if (!Files.exists(path)) {
-            path = Path.of("./data/cn.travellerr.Favorability");
+            path = Favorability.INSTANCE.getDataFolderPath();
             String sourcePath = "gift.json";
             String destinationPath = "./data/cn.travellerr.Favorability/gift.json";
             try {

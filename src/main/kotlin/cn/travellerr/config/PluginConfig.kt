@@ -5,6 +5,9 @@ import net.mamoe.mirai.console.data.ValueDescription
 import net.mamoe.mirai.console.data.value
 
 object PluginConfig : AutoSavePluginConfig("config") {
+    @ValueDescription("自动检查更新\n")
+    val autoUpdate: Boolean by value(true)
+
     @ValueDescription("使用经济名称\n0 :  HuYanEconomy\n 1 : MiraiDailySign")
     val economyName: Int by value(0)
 

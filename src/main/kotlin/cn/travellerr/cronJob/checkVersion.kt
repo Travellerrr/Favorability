@@ -1,7 +1,7 @@
 package cn.travellerr.cronJob
 
 import cn.travellerr.utils.Log
-import cn.travellerr.utils.checkLatestVersion
+import cn.travellerr.version.checkLatestVersion
 import org.quartz.*
 import org.quartz.impl.StdSchedulerFactory
 

@@ -6,8 +6,8 @@ import cn.travellerr.config.PluginConfig;
 import cn.travellerr.config.TipsConfig;
 import cn.travellerr.utils.EconomyUtil;
 import cn.travellerr.utils.checkDepends;
-import cn.travellerr.utils.checkLatestVersion;
 import cn.travellerr.utils.copyGiftJson;
+import cn.travellerr.version.checkLatestVersion;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import top.mrxiaom.mirai.dailysign.MiraiDailySign;
@@ -18,7 +18,7 @@ public final class Favorability extends JavaPlugin {
     public static final Favorability INSTANCE = new Favorability();
     public static PluginConfig config;
     public static TipsConfig msgConfig;
-    public static final String version = "1.0.2";
+    public static final String version = "1.0.3";
 
     private Favorability() {
         super(new JvmPluginDescriptionBuilder("cn.travellerr.Favorability", version)
@@ -57,4 +57,5 @@ public final class Favorability extends JavaPlugin {
         cronJob();
 
     }
+
 }
