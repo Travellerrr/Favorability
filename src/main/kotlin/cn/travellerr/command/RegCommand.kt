@@ -12,6 +12,6 @@ object RegCommand {
         CommandManager.registerCommand(ReloadConfig)
         CommandManager.registerCommand(GetLoveList)
         CommandManager.registerCommand(GetAllLoveList)
-        //CommandManager.registerCommand(TestCommand)
+        CommandManager.registerCommand(CheatLoveExp)
     }
 }

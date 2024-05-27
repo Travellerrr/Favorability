@@ -17,6 +17,9 @@ object TipsConfig : AutoSavePluginConfig("MsgConfig") {
 
     //第" + (i+1) + "名"+config.getSuffix()+",\n"+subject.getBot().getNick()+"对Ta的好感度为: " + FavorLevel(LoveExpList.get(i))
 
+    @ValueDescription("好感度为负时的消息")
+    val negativeFavorMessage: String by value("%成员% %后缀% 是谁？（冷漠）")
+
     @ValueDescription("好感度消息，每 \"changeLevel\" 级一条消息\n")
     val LoveMessage by value(
         listOf(

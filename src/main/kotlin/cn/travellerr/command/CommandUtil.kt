@@ -1,9 +1,10 @@
 package cn.travellerr.command
 
 import cn.travellerr.Favorability
+import cn.travellerr.config.LoveYou
 import cn.travellerr.config.PluginConfig
 import cn.travellerr.config.TipsConfig
-import cn.travellerr.make.makingMachine
+import cn.travellerr.makeMachine.make.makingMachine
 import cn.travellerr.utils.EconomyUtil
 import cn.travellerr.utils.FavorUtil
 import cn.travellerr.utils.wtfUtil
@@ -73,6 +74,7 @@ object ReloadConfig : SimpleCommand(Favorability.INSTANCE, "Favorability", descr
         if (msg == "reload") {
             Favorability.INSTANCE.reloadPluginConfig(TipsConfig)
             Favorability.INSTANCE.reloadPluginConfig(PluginConfig)
+            Favorability.INSTANCE.reloadPluginConfig(LoveYou)
             EconomyUtil.init()
             sender.sendMessage("重载已完成")
         }
@@ -108,6 +110,22 @@ object GetAllLoveList : SimpleCommand(
     fun reload(context: CommandContext) {
         val subject: Contact? = context.sender.subject
         FavorUtil.getAllLoveList(subject)
+    }
+}
+
+object CheatLoveExp : SimpleCommand(
+    Favorability.INSTANCE,
+    "cheatLoveExp",
+    "好感增加",
+    "好感度增加",
+    "好感作弊",
+    description = "强制增加/减少好感度"
+) {
+    @Handler
+    fun reload(context: CommandContext, exp: Int) {
+        val subject: Contact? = context.sender.subject
+        val user: User? = context.sender.user
+        FavorUtil.cheatLove(user, exp, subject)
     }
 }
 

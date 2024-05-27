@@ -1,4 +1,4 @@
-package cn.travellerr.make;
+package cn.travellerr.makeMachine.make;
 
 //import cn.chahuyun.economy.utils.EconomyUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -16,8 +16,6 @@ import java.util.List;
 
 import static cn.travellerr.Favorability.config;
 import static cn.travellerr.Favorability.msgConfig;
-import static cn.travellerr.make.getPng.*;
-import static cn.travellerr.utils.sqlUtil.*;
 
 public class makingMachine {
     public static void use(Contact subject, User user, Long coin) {
@@ -36,7 +34,7 @@ public class makingMachine {
     }
 
     private static boolean checkRealMoney(User user, int money) {
-        double RealMoney = cn.travellerr.utils.EconomyUtil.getMoney(user);
+        double RealMoney = EconomyUtil.getMoney(user);
         return RealMoney >= money;
     }
 
@@ -50,16 +48,16 @@ public class makingMachine {
             //int time = 1;
 
             sqlUtil.updateInfo(user.getId(), false);
-            if (!timesUp && isMaking) { //时间未到且未领取制造物品
+            if (!sqlUtil.timesUp && sqlUtil.isMaking) { //时间未到且未领取制造物品
                 subject.sendMessage(new At(user.getId()).plus("队列中已有任务，请勿重复制造~"));
                 return;
             }
-            if (timesUp && isMaking) { //时间已到且未领取制造物品
+            if (sqlUtil.timesUp && sqlUtil.isMaking) { //时间已到且未领取制造物品
                 subject.sendMessage(new At(user.getId()).plus("制造完喽~先领取物品吧~"));
                 return;
             }
             sqlUtil.startMake(user.getId(), money, time * 60L);
-            subject.sendMessage(new At(user.getId()).plus(String.format("开始制造，时间：%d 分钟，物品等级: %s \n 请在时间到后发送\"#查看制造\"获取物品", time, itemLevel)));
+            subject.sendMessage(new At(user.getId()).plus(String.format("开始制造，时间：%d 分钟，物品等级: %s \n 请在时间到后发送\"#查看制造\"获取物品", time, sqlUtil.itemLevel)));
             EconomyUtil.plusMoney(user, -money);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -69,8 +67,8 @@ public class makingMachine {
     public static void checkItem(Contact subject, User user) {
         try {
             sqlUtil.updateInfo(user.getId(), true);
-            if (timesUp && isMaking) { //制造完毕且未领取物品
-                message(itemLevel);
+            if (sqlUtil.timesUp && sqlUtil.isMaking) { //制造完毕且未领取物品
+                getPng.message(sqlUtil.itemLevel);
                 URL itemUrl = new URL(getPng.url);
                 ExternalResource resource = ExternalResource.create(itemUrl.openStream());
                 Image item = subject.uploadImage(resource);
@@ -79,21 +77,21 @@ public class makingMachine {
                                 .plus("\n")
                                 .plus(item)
                                 .plus("\n")
-                                .plus(name)
+                                .plus(getPng.name)
                                 .plus("\n")
-                                .plus(Describe)
+                                .plus(getPng.Describe)
                                 .plus("\n等级：")
-                                .plus(level)
+                                .plus(getPng.level)
                                 .plus("\n增加好感度：")
-                                .plus(String.valueOf(love))
+                                .plus(String.valueOf(getPng.love))
                                 .plus("\n")
                 );
-                sqlUtil.addLove(love, user.getId());
+                sqlUtil.addLove(getPng.love, user.getId());
                 resource.close();
                 return;
             }
-            if (!timesUp && isMaking) {
-                subject.sendMessage(new At(user.getId()).plus(String.format("还没制作完成哦~还剩%d分钟\n预计制造物品等级: %d", needTime, itemLevel)));
+            if (!sqlUtil.timesUp && sqlUtil.isMaking) {
+                subject.sendMessage(new At(user.getId()).plus(String.format("还没制作完成哦~还剩%d分钟\n预计制造物品等级: %d", sqlUtil.needTime, sqlUtil.itemLevel)));
                 return;
             }
             subject.sendMessage(new At(user.getId()).plus("制造队列为空~"));

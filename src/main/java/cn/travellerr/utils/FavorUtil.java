@@ -16,30 +16,33 @@ import java.util.stream.Collectors;
 
 import static cn.travellerr.Favorability.config;
 import static cn.travellerr.Favorability.msgConfig;
-import static cn.travellerr.utils.ReplaceMsg.Replace;
-import static cn.travellerr.utils.sqlUtil.getListSql;
 
 
 public class FavorUtil {
     public static void checkFavor(Contact subject, User user, Bot bot) {
         int exp = sqlUtil.getExp(user.getId());
         String originMsg = msgConfig.getCheckLove();
-        originMsg = Replace(originMsg, "%成员%", user.getNick());
-        originMsg = Replace(originMsg, "%机器人%", bot.getNick());
-        originMsg = Replace(originMsg, "%好感度%", FavorLevel(exp));
-        originMsg = Replace(originMsg, "%好感信息%", FavorMsg(FavorLevel(exp), user.getNick()));
+        originMsg = ReplaceMsg.Replace(originMsg, "%成员%", user.getNick());
+        originMsg = ReplaceMsg.Replace(originMsg, "%机器人%", bot.getNick());
+        originMsg = ReplaceMsg.Replace(originMsg, "%好感度%", FavorLevel(exp));
+        originMsg = ReplaceMsg.Replace(originMsg, "%好感信息%", FavorMsg(FavorLevel(exp), user.getNick()));
         subject.sendMessage(new At(user.getId()).plus("\n").plus(originMsg));
         //subject.sendMessage(new At(user.getId()).plus(String.format("\n%s对你的好感度为: %d\n%s", bot.getNick(), FavorLevel(exp), FavorMsg(FavorLevel(exp), user.getNick()))));
     }
 
     private static String FavorMsg(int level, String SenseiName) {
         PluginConfig config = PluginConfig.INSTANCE;
-        List<String> msgList = msgConfig.getLoveMessage();
-        int index = level / config.getChangeLevel();
-        if (index > msgList.size()) index = msgList.size();
-        String msg = msgList.get(index);
-        msg = Replace(msg, "%成员%", SenseiName);
-        return Replace(msg, "%后缀%", config.getSuffix());
+        String msg;
+        if (level > 0) {
+            List<String> msgList = msgConfig.getLoveMessage();
+            int index = level / config.getChangeLevel();
+            if (index > msgList.size()) index = msgList.size() - 1;
+            msg = msgList.get(index);
+        } else {
+            msg = msgConfig.getNegativeFavorMessage();
+        }
+        msg = ReplaceMsg.Replace(msg, "%成员%", SenseiName);
+        return ReplaceMsg.Replace(msg, "%后缀%", config.getSuffix());
     }
 
 
@@ -47,8 +50,12 @@ public class FavorUtil {
      * 计算好感度等级
      */
     private static int FavorLevel(int exp) {
+        if (exp < 0) {
+            return -Math.abs(exp) / 50;
+        }
+
         int[] thresholds = config.getLevelList();
-        int level = 1;
+        int level = 0;
         for (int threshold : thresholds) {
             if (exp >= threshold) {
                 level++;
@@ -56,11 +63,14 @@ public class FavorUtil {
                 break;
             }
         }
+
         if (level > 50) {
             level = 50 + (exp - 29175) / config.getPerLevel();
         }
+
         return level;
     }
+
 
     private static List<Integer> castIntList(List<?> list) {
         List<Integer> result = new ArrayList<>();
@@ -80,7 +90,7 @@ public class FavorUtil {
 
     public static void getLoveList(Contact subject, Group group) {
         // 获取数据
-        Map<String, List<?>> info = getListSql();
+        Map<String, List<?>> info = sqlUtil.getListSql();
         List<Integer> LoveExpList = castIntList(info.get("expList"));
         List<Long> uidName = castLongList(info.get("uidName"));
 
@@ -108,10 +118,10 @@ public class FavorUtil {
 
             //%成员% %后缀%,
             //%机器人%%好感%
-            messageContent = Replace(messageContent, "%成员%", nickname);
-            messageContent = Replace(messageContent, "%后缀%", config.getSuffix());
-            messageContent = Replace(messageContent, "%机器人%", subject.getBot().getNick());
-            messageContent = Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
+            messageContent = ReplaceMsg.Replace(messageContent, "%成员%", nickname);
+            messageContent = ReplaceMsg.Replace(messageContent, "%后缀%", config.getSuffix());
+            messageContent = ReplaceMsg.Replace(messageContent, "%机器人%", subject.getBot().getNick());
+            messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
             Message message = new PlainText(messageContent);
 
             // 添加消息到转发器
@@ -125,7 +135,7 @@ public class FavorUtil {
 
     public static void getAllLoveList(Contact subject) {
         // 获取数据
-        Map<String, List<?>> info = getListSql();
+        Map<String, List<?>> info = sqlUtil.getListSql();
         List<Integer> LoveExpList = castIntList(info.get("expList"));
         List<Long> uidName = castLongList(info.get("uidName"));
 
@@ -139,12 +149,11 @@ public class FavorUtil {
         for (int i = 0; i < size; i++) {
 
             String messageContent = msgConfig.getTotalLoveMsg();
-
-            messageContent = Replace(messageContent, "%成员%", uidName.get(i));
-            messageContent = Replace(messageContent, "%机器人%", subject.getBot().getNick());
-            messageContent = Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
-            messageContent = Replace(messageContent, "%后缀%", suffix);
-            messageContent = Replace(messageContent, "%排名%", (i + 1));
+            messageContent = ReplaceMsg.Replace(messageContent, "%成员%", uidName.get(i));
+            messageContent = ReplaceMsg.Replace(messageContent, "%机器人%", subject.getBot().getNick());
+            messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
+            messageContent = ReplaceMsg.Replace(messageContent, "%后缀%", suffix);
+            messageContent = ReplaceMsg.Replace(messageContent, "%排名%", (i + 1));
 
 
             Message message = new PlainText(messageContent);
@@ -157,6 +166,11 @@ public class FavorUtil {
         subject.sendMessage(forwardMessage.build());
     }
 
+
+    public static void cheatLove(User user, int exp, Contact subject) {
+        sqlUtil.addLove(exp, user.getId());
+        subject.sendMessage(new At(user.getId()).plus("\n作弊成功，增加 " + exp + "经验值"));
+    }
 }
 
 

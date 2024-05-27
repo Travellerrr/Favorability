@@ -246,6 +246,7 @@ public class sqlUtil {
                 selectStmt.setLong(1, qqNumber);
                 try (ResultSet rs = selectStmt.executeQuery()) {
                     if (rs.next()) {
+                        Log.debug(rs.getObject("exp"));
                         return rs.getInt("exp");
                     }
                 }

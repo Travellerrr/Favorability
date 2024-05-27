@@ -25,4 +25,8 @@ public class Log {
     public static void error(String msg) {
         log.error(name + msg);
     }
+
+    public static void debug(Object msg) {
+        log.debug(name + msg);
+    }
 }
