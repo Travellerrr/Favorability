@@ -2,7 +2,9 @@ package cn.travellerr.utils;
 
 import cn.travellerr.config.PluginConfig;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.contact.*;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.ForwardMessageBuilder;
 import net.mamoe.mirai.message.data.Message;
@@ -13,6 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static cn.travellerr.Favorability.config;
 import static cn.travellerr.Favorability.msgConfig;
@@ -51,7 +54,7 @@ public class FavorUtil {
      */
     private static int FavorLevel(int exp) {
         if (exp < 0) {
-            return -Math.abs(exp) / 50;
+            return -Math.abs(exp) / config.getNegativeExp();
         }
 
         int[] thresholds = config.getLevelList();
@@ -93,44 +96,36 @@ public class FavorUtil {
         Map<String, List<?>> info = sqlUtil.getListSql();
         List<Integer> LoveExpList = castIntList(info.get("expList"));
         List<Long> uidName = castLongList(info.get("uidName"));
+        Map<Long, Integer> userLoveList = IntStream.range(0, Math.min(uidName.size(), LoveExpList.size()))
+                .boxed()
+                .collect(Collectors.toMap(uidName::get, LoveExpList::get));
 
         // 构建消息转发器
         ForwardMessageBuilder forwardMessage = new ForwardMessageBuilder(subject);
 
         // 获取群成员列表
-        ContactList<NormalMember> contactList = group.getMembers();
-        List<NormalMember> normalMemberList = contactList.stream().toList();
-
-        // 过滤并排序群成员
-        List<User> users = normalMemberList.stream()
+        List<User> users = group.getMembers().stream()
                 .filter(member -> uidName.contains(member.getId()))
                 .sorted(Comparator.comparingInt(member -> uidName.indexOf(member.getId())))
+                .limit(100)
                 .collect(Collectors.toList());
 
-        // 确定循环上限
-        int size = Math.min(Math.min(LoveExpList.size(), users.size()), 100);
-
         // 遍历并发送消息
-        for (int i = 0; i < size; i++) {
-            // 构建消息内容
-            String nickname = users.get(i).getNick();
-            String messageContent = msgConfig.getGroupLoveMsg();//"这位是 " + nickname + " Sensei,\n阿洛娜对Ta的好感度为: " + FavorLevel(LoveExpList.get(i));
-
-            //%成员% %后缀%,
-            //%机器人%%好感%
+        users.forEach(user -> {
+            String nickname = user.getNick();
+            String messageContent = msgConfig.getGroupLoveMsg();
             messageContent = ReplaceMsg.Replace(messageContent, "%成员%", nickname);
             messageContent = ReplaceMsg.Replace(messageContent, "%后缀%", config.getSuffix());
             messageContent = ReplaceMsg.Replace(messageContent, "%机器人%", subject.getBot().getNick());
-            messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
+            messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(userLoveList.get(user.getId())));
             Message message = new PlainText(messageContent);
-
-            // 添加消息到转发器
-            forwardMessage.add(users.get(i), message);
-        }
+            forwardMessage.add(user, message);
+        });
 
         // 发送转发的消息
         subject.sendMessage(forwardMessage.build());
     }
+
 
 
     public static void getAllLoveList(Contact subject) {
@@ -169,7 +164,11 @@ public class FavorUtil {
 
     public static void cheatLove(User user, int exp, Contact subject) {
         sqlUtil.addLove(exp, user.getId());
-        subject.sendMessage(new At(user.getId()).plus("\n作弊成功，增加 " + exp + "经验值"));
+        subject.sendMessage(new At(user.getId())
+                .plus("\n作弊成功，增加 " + exp + "经验值\n折合等级约为 ")
+                .plus(FavorLevel(exp) + " 级\n，现在等级为")
+                .plus(FavorLevel(sqlUtil.getExp(user.getId())) + " 级")
+        );
     }
 }
 

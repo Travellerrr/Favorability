@@ -45,6 +45,7 @@ public final class Favorability extends JavaPlugin {
         reloadPluginConfig(cn.travellerr.config.PluginConfig.INSTANCE);
         reloadPluginConfig(cn.travellerr.config.TipsConfig.INSTANCE);
         reloadPluginConfig(cn.travellerr.config.LoveYou.INSTANCE);
+
         config = cn.travellerr.config.PluginConfig.INSTANCE;
         msgConfig = cn.travellerr.config.TipsConfig.INSTANCE;
         loveYou = cn.travellerr.config.LoveYou.INSTANCE;

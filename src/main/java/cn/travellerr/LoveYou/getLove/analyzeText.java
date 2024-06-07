@@ -2,6 +2,7 @@ package cn.travellerr.LoveYou.getLove;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.Favorability;
+import cn.travellerr.LoveYou.utils.LoveSqlUtil;
 import cn.travellerr.utils.Log;
 import cn.travellerr.utils.sqlUtil;
 import com.hankcs.hanlp.classification.classifiers.IClassifier;
@@ -9,6 +10,7 @@ import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
 import com.hankcs.hanlp.classification.models.NaiveBayesModel;
 import com.hankcs.hanlp.corpus.io.IOUtil;
 import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.PlainText;
@@ -25,9 +27,8 @@ public class analyzeText {
         try {
             String originMsg = event.getMessage().serializeToMiraiCode();
             Contact subject = event.getSubject();
-            String path = Favorability.INSTANCE.getDataFolderPath() + loveYou.getPath();
-            NaiveBayesModel model = (NaiveBayesModel) IOUtil.readObjectFrom(path);
-            IClassifier classifier = new NaiveBayesClassifier(model);
+            User user = event.getSender();
+            String path = Favorability.INSTANCE.getDataFolderPath() + loveYou.getLovePath();
             String atMsg = new At(event.getBot().getId()).serializeToMiraiCode();
             originMsg = originMsg.substring(atMsg.length());
 
@@ -35,9 +36,22 @@ public class analyzeText {
                 originMsg = originMsg.substring(1);
             }
 
+            LoveSqlUtil.checkUserMsgTime(user);
+            if (LoveSqlUtil.isSimilarityMsg(user, originMsg)) {
+                List<String> msg = loveYou.getSimilarity();
+
+                int index = RandomUtil.randomInt(0, msg.size());
+                subject.sendMessage(msg.get(index));
+                return;
+            }
+
+            NaiveBayesModel model = (NaiveBayesModel) IOUtil.readObjectFrom(path);
+            IClassifier classifier = new NaiveBayesClassifier(model);
             Map<String, Double> msg = classifier.predict(originMsg);
 
-            int ans = (int) (msg.get("1") * 100 - 50);
+            //int ans = (int) (msg.get("1") * 100 - 50);
+            Log.debug("HanLP分析变化: " + msg.get("1"));
+            int ans = (int) ((mapSentimentScore(msg.get("1"), loveYou.getLoveMax(), loveYou.getLoveMin())) * 200 - 100);
             Log.debug("情感变化：" + ans);
 
             int index;
@@ -70,6 +84,8 @@ public class analyzeText {
             sqlUtil.addLove(ans, event.getSender().getId());
             QuoteReply reply = new QuoteReply(event.getMessage());
             subject.sendMessage(reply.plus(new PlainText(replyMsg + "  \n【变化：" + expChange + "】")));
+
+            LoveSqlUtil.saveMsg(user, originMsg);
         } catch (Exception e) {
             Log.error(e.fillInStackTrace().getMessage());
         }
@@ -78,5 +94,32 @@ public class analyzeText {
     private static String characterNum(String character, int num) {
         int repeat = Math.abs(num) / 10;
         return character.repeat(Math.max(1, repeat));
+    }
+
+    private static double mapSentimentScore(double ans, int targetMax, int targetMin) {
+
+        double fluctuationTimes = RandomUtil.randomDouble(0.7, 1);
+        double mappedScore = ans * fluctuationTimes;
+
+        targetMax = targetMax / 100;
+        targetMin = targetMin / 100;
+
+        if (ans <= 0.46) {
+            mappedScore = ans;
+        }
+
+        mappedScore = addRandomFluctuation(mappedScore, targetMax, targetMin);
+
+        //判断中性情感
+        if (0.511 >= ans && ans >= 0.498) {
+            mappedScore = 0.5;
+        }
+        Log.debug("浮动变化: " + mappedScore);
+        return mappedScore;
+    }
+
+    private static double addRandomFluctuation(double ans, int targetMax, int targetMin) {
+        double fluctuation = RandomUtil.randomDouble(0 - loveYou.getFluctuation(), loveYou.getFluctuation());
+        return Math.max(Math.min(ans + fluctuation, targetMax), targetMin);
     }
 }

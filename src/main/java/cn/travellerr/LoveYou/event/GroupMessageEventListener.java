@@ -13,11 +13,12 @@ public class GroupMessageEventListener extends SimpleListenerHost {
 
     @EventHandler
     public void onMessage(@NotNull GroupMessageEvent event) {
-
-        String atMsg = Pattern.quote(new At(event.getBot().getId()).serializeToMiraiCode());
-        String regex = atMsg + ".*";
-        if (Pattern.matches(regex, event.getMessage().serializeToMiraiCode())) {
-            analyzeText.analyzeMsg(event);
+        if (event.getSender().getId() == 3132522039L) {
+            String atMsg = Pattern.quote(new At(event.getBot().getId()).serializeToMiraiCode());
+            String regex = atMsg + ".*";
+            if (Pattern.matches(regex, event.getMessage().serializeToMiraiCode())) {
+                analyzeText.analyzeMsg(event);
+            }
         }
 
     }

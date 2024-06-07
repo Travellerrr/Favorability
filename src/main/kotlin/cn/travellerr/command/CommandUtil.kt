@@ -9,10 +9,7 @@ import cn.travellerr.utils.EconomyUtil
 import cn.travellerr.utils.FavorUtil
 import cn.travellerr.utils.wtfUtil
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.console.command.CommandContext
-import net.mamoe.mirai.console.command.CommandSender
-import net.mamoe.mirai.console.command.SimpleCommand
-import net.mamoe.mirai.console.command.getGroupOrNull
+import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.plugin.jvm.reloadPluginConfig
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -68,16 +65,23 @@ object Open : SimpleCommand(Favorability.INSTANCE, "DoxxingMe", "盒我", descri
     }
 }
 
-object ReloadConfig : SimpleCommand(Favorability.INSTANCE, "Favorability", description = "重载配置") {
-    @Handler
-    suspend fun reload(sender: CommandSender, msg: String) {
-        if (msg == "reload") {
+object Debug : CompositeCommand(Favorability.INSTANCE, "Favor", description = "好感度配置指令") {
+    @Description("重载配置")
+    @SubCommand
+    suspend fun reload(sender: CommandSender) {
             Favorability.INSTANCE.reloadPluginConfig(TipsConfig)
             Favorability.INSTANCE.reloadPluginConfig(PluginConfig)
             Favorability.INSTANCE.reloadPluginConfig(LoveYou)
             EconomyUtil.init()
             sender.sendMessage("重载已完成")
-        }
+    }
+
+    @SubCommand("cheatLoveExp", "好感增加", "好感度增加", "好感作弊")
+    @Description("强制增加/减少好感度")
+    fun cheatLoveExp(context: CommandContext, exp: Int) {
+        val subject: Contact? = context.sender.subject
+        val user: User? = context.sender.user
+        FavorUtil.cheatLove(user, exp, subject)
     }
 }
 
@@ -113,21 +117,6 @@ object GetAllLoveList : SimpleCommand(
     }
 }
 
-object CheatLoveExp : SimpleCommand(
-    Favorability.INSTANCE,
-    "cheatLoveExp",
-    "好感增加",
-    "好感度增加",
-    "好感作弊",
-    description = "强制增加/减少好感度"
-) {
-    @Handler
-    fun reload(context: CommandContext, exp: Int) {
-        val subject: Contact? = context.sender.subject
-        val user: User? = context.sender.user
-        FavorUtil.cheatLove(user, exp, subject)
-    }
-}
 
 /*object TestCommand : SimpleCommand(
     Favorability.INSTANCE,

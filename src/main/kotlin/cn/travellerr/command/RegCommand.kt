@@ -9,9 +9,8 @@ object RegCommand {
         CommandManager.registerCommand(Make)
         CommandManager.registerCommand(Open)
         CommandManager.registerCommand(OpenOthers)
-        CommandManager.registerCommand(ReloadConfig)
+        CommandManager.registerCommand(Debug)
         CommandManager.registerCommand(GetLoveList)
         CommandManager.registerCommand(GetAllLoveList)
-        CommandManager.registerCommand(CheatLoveExp)
     }
 }

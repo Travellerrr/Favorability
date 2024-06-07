@@ -1,6 +1,7 @@
 package cn.travellerr.utils;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.travellerr.Favorability;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,7 +18,7 @@ public class sqlUtil {
     public static boolean isMaking;
     public static boolean timesUp;
     public static int needTime;
-    static String directory = "./data/cn.travellerr.Favorability/";
+    static String directory = Favorability.INSTANCE.getDataFolderPath().toString();
 
     public static void startMake(long qqNumber, int money, long time) {
         String dbName = "favorability.db"; // 数据库文件名

@@ -29,6 +29,9 @@ object PluginConfig : AutoSavePluginConfig("config") {
     @ValueDescription("当好感经验值超出下方定义数量\n每几exp升一级")
     val perLevel by value(1810)
 
+    @ValueDescription("当好感度exp低于0时好感等级计算分段")
+    val negativeExp: Int by value(50)
+
     @ValueDescription("好感信息上升计算自定义\n")
     val levelList by value(
         intArrayOf(
