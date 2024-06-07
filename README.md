@@ -115,6 +115,50 @@ notEnough:
   - 商家们一个个摇头苦笑，无可奈何。
 ```
 
+<br><br>
+
+### LoveYouConfig.yml —— 主要配置发送对话信息内容
+
+```yaml
+# 是否启用LoveYou
+enable: false
+
+# 情感模型目录，以 本插件data目录为基准
+lovePath: '/LoveYou/nb-classifier-for-weibo.ser'
+
+# 信息比对模型，以 本插件data目录为基准
+msgPath: '/LoveYou/hanlp.txt'
+
+# 单次情感增加最大值
+loveMax: 100
+
+# 单次情感增加最小值
+loveMin: -100
+
+# 情感上下浮动值 (单次情感0-1)
+# 太大会导致正面消息被作为负面情感，建议不要改动
+fluctuation: 0.03
+
+# 对话记录保存时长 (秒)
+duration: 180
+
+# 好感上升对话
+up:
+  - 唔……我就勉为其难接受吧！
+
+# 好感持平对话
+flat:
+  - 已阅
+
+# 好感下降对话
+down:
+  - '?你在说什么！也太伤我心了吧！'
+
+# 对话信息重复消息
+similarity:
+  - 咕呣呣……这句话我已经听腻啦！
+```
+
 ---
 
 ## 礼物配置示例
