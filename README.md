@@ -1,10 +1,12 @@
-# 好感度插件
+# 仿BA好感度插件
 
 [![](https://img.shields.io/github/v/release/Travellerrr/Favorability)](https://github.com/Travellerrr/Favorability/releases)
+ [![](https://img.shields.io/badge/Github-好感度插件-%2355db30?)](https://github.com/Travellerrr/Favorability)
+![https://github.com/Travellerrr/Favorability](https://img.shields.io/github/stars/Travellerrr/Favorability)
 
 ## 介绍
 
-本好感度插件基于了HuyanEconomy的经济系统，如果有想法的话后续或许能适配更多的经济插件
+本好感度插件兼容 **HuyanEconomy的经济系统** 与 **MiraiDailySign签到插件** , 可以选择使用 `hy-gold` 或 `mirai-coin` 作为消耗货币，在`config.yml`下设置即可，如果有想法的话后续或许能适配更多的经济插件
 
 ~~（其实就是懒得自建方法）~~
 
