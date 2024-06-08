@@ -11,21 +11,50 @@ import xyz.cssxsh.mirai.economy.service.IEconomyService;
 import static cn.travellerr.Favorability.config;
 
 public class EconomyUtil {
+
+    /**
+     * 经济服务
+     */
     private static final IEconomyService service = EconomyService.INSTANCE;
+
+    /**
+     * 经济上下文
+     */
     private static EconomyContext context;
+
+    /**
+     * 经济货币
+     */
     private static EconomyCurrency currency;
 
+    /**
+     * 获取用户货币
+     *
+     * @param user 用户
+     * @return 货币数量
+     * @author Travellerr
+     */
     public static Double getMoney(User user) {
         EconomyAccount account = service.account(user);
         return context.get(account, currency);
     }
 
+    /**
+     * 增加用户货币
+     * @author Travellerr
+     * @param user 用户
+     * @param money 货币数量
+     */
     public static void plusMoney(User user, int money) {
         EconomyAccount account = service.account(user);
 
         context.plusAssign(account, currency, money);
     }
 
+    /**
+     * 注册货币
+     * @author Travellerr
+     */
     public static void init() {
         int economyName = config.getEconomyName();
         if (economyName == 0) {

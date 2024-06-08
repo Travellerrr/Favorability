@@ -21,8 +21,18 @@ import java.util.Map;
 
 import static cn.travellerr.Favorability.loveYou;
 
+/**
+ * 实现对消息的情感分析以及对用户好感信息的操作
+ *
+ * @author Travellerr
+ */
 public class analyzeText {
 
+    /**
+     * 进行消息情感分析并处理好感度增幅
+     * @author Travellerr
+     * @param event 消息实例
+     */
     public static void analyzeMsg(MessageEvent event) {
         try {
             String originMsg = event.getMessage().serializeToMiraiCode();
@@ -57,6 +67,7 @@ public class analyzeText {
             int index;
             String replyMsg;
             String expChange;
+
             if (ans > 0) {
                 Log.debug("情感上涨");
                 List<String> up = loveYou.getUp();
@@ -81,6 +92,7 @@ public class analyzeText {
                 expChange = characterNum("-", ans);
                 replyMsg = down.get(index);
             }
+
             sqlUtil.addLove(ans, event.getSender().getId());
             QuoteReply reply = new QuoteReply(event.getMessage());
             subject.sendMessage(reply.plus(new PlainText(replyMsg + "  \n【变化：" + expChange + "】")));
@@ -91,10 +103,24 @@ public class analyzeText {
         }
     }
 
+    /**
+     * @author Travellerr
+     * @param character 重复字符
+     * @param num 重复次数
+     * @return 组合的字符串
+     */
     private static String characterNum(String character, int num) {
         int repeat = Math.abs(num) / 10;
         return character.repeat(Math.max(1, repeat));
     }
+
+    /**
+     * @author Travellerr
+     * @param ans 分析情感结果
+     * @param targetMax 映射最大值
+     * @param targetMin 映射最小值
+     * @return 映射后数值
+     */
 
     private static double mapSentimentScore(double ans, int targetMax, int targetMin) {
 
@@ -117,6 +143,14 @@ public class analyzeText {
         Log.debug("浮动变化: " + mappedScore);
         return mappedScore;
     }
+
+    /**
+     * @author Travellerr
+     * @param ans 情感数值
+     * @param targetMax 映射最大值
+     * @param targetMin 映射最小值
+     * @return 浮动结果
+     */
 
     private static double addRandomFluctuation(double ans, int targetMax, int targetMin) {
         double fluctuation = RandomUtil.randomDouble(0 - loveYou.getFluctuation(), loveYou.getFluctuation());

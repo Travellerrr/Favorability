@@ -14,10 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 public class sqlUtil {
-    public static int itemLevel;
+   /* public static int itemLevel;
     public static boolean isMaking;
     public static boolean timesUp;
-    public static int needTime;
+    public static int needTime;*/
+
+    public static MakingItem makingItem;
+
     static String directory = Favorability.INSTANCE.getDataFolderPath().toString();
 
     public static void startMake(long qqNumber, int money, long time) {
@@ -35,9 +38,10 @@ public class sqlUtil {
             if (isQQNumberNew(conn, qqNumber)) {
                 insertData(conn, qqNumber);
             }
-            if (isMaking) return;
+            if (makingItem.isMaking()) return;
             int chance = RandomUtil.randomInt(1, 100);
-            itemLevel = money >= 200 ? (chance >= 75 ? 3 : 2) : (chance >= 95 ? 3 : 2);
+            int itemLevel = money >= 200 ? (chance >= 75 ? 3 : 2) : (chance >= 95 ? 3 : 2);
+            makingItem.setItemLevel(itemLevel);
             updateData(conn, qqNumber, time, itemLevel);
         } catch (SQLException e) {
             throw new RuntimeException("出错了~", e);
@@ -101,7 +105,7 @@ public class sqlUtil {
                     long currentTimeStamp = System.currentTimeMillis() / 1000;
                     System.out.println(currentTimeStamp);
                     System.out.println(time);
-                    needTime = (int) (makeTime - (currentTimeStamp - time)) / 60;
+                    makingItem.setNeedTime((int) (makeTime - (currentTimeStamp - time)) / 60);
                     if (currentTimeStamp - time >= makeTime) {
                         if (clear) {
                             clearQueue(conn, qqNumber);
@@ -189,9 +193,9 @@ public class sqlUtil {
         createDirectory(directory);
         try (Connection conn = DriverManager.getConnection(url)) {
             createTable(conn);
-            isMaking = isMaking(conn, qqNumber);
-            timesUp = timesUp(conn, qqNumber, clear);
-            itemLevel = getItemLevel(conn, qqNumber);
+            makingItem.setMaking(isMaking(conn, qqNumber));
+            makingItem.setTimesUp(timesUp(conn, qqNumber, clear));
+            makingItem.setItemLevel(getItemLevel(conn, qqNumber));
         } catch (SQLException e) {
             throw new RuntimeException("出错了~", e);
         }

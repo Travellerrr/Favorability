@@ -12,11 +12,20 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class getPng {
-    static String name;
-    static String Describe;
-    static String level;
-    static int love;
-    static String url;
+
+    /**
+     * 物品实例
+     */
+    static Item item;
+
+    /**
+     * 拼接图片链接地址
+     *
+     * @param id  json文件中礼物的编号
+     * @param url 传入的url (完整/不完整)
+     * @return 完整的url
+     * @author Travellerr
+     */
     private static String url(int id, String url){
         if (!url.startsWith("http")) {
             if (id >= 38) return "https://cdnimg.gamekee.com/wiki2.0/images/w_300/h_237/829/43637/2022/6/" + url;
@@ -25,6 +34,11 @@ public class getPng {
         return url;
     }
 
+    /**
+     * 创建物品实例
+     * @author Travellerr
+     * @param itemLevel 物品等级
+     */
     public static void message(int itemLevel) {
         try (InputStream inputStream = getPng.class.getClassLoader().getResourceAsStream("gift.json")) {
             if (inputStream != null) {
@@ -46,12 +60,15 @@ public class getPng {
                             JsonObject giftObject = jsonObject.getAsJsonObject(String.valueOf(id));
 
                             // 从Json中获取数据并赋值给相应变量
-                            name = getStringFromJson(giftObject, "Name");
-                            Describe = getStringFromJson(giftObject, "Describe");
+                            String name = getStringFromJson(giftObject, "Name");
+                            String Describe = getStringFromJson(giftObject, "Describe");
                             int tempLevel = Integer.parseInt(Objects.requireNonNull(getStringFromJson(giftObject, "Level")));
-                            level = getStar(tempLevel);
-                            love = Integer.parseInt(Objects.requireNonNull(getStringFromJson(giftObject, "Love")));
-                            url = url(id, Objects.requireNonNull(getStringFromJson(giftObject, "Url")));
+                            String level = getStar(tempLevel);
+                            int love = Integer.parseInt(Objects.requireNonNull(getStringFromJson(giftObject, "Love")));
+                            String url = url(id, Objects.requireNonNull(getStringFromJson(giftObject, "Url")));
+
+                            item = new Item(name, Describe, level, love, url);
+
                         }
                     }
                 }
@@ -61,10 +78,23 @@ public class getPng {
         }
     }
 
-
+    /**
+     * 计算物品星值
+     * @author Travellerr
+     * @param level  物品等级（数字）
+     * @return 物品等级（字符串）
+     */
     private static String getStar(int level) {
         return "☆".repeat(Math.max(0, level));
     }
+
+    /**
+     * 从Json中获取字符串
+     * @author Travellerr
+     * @param jsonObject Json对象
+     * @param key Json键值
+     * @return 获取到的字符串
+     */
     private static String getStringFromJson(JsonObject jsonObject, String key) {
         JsonElement jsonElement = jsonObject.get(key);
         return jsonElement != null ? jsonElement.getAsString() : null;

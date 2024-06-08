@@ -1,7 +1,6 @@
 package cn.travellerr.version;
 
 import cn.travellerr.utils.Log;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,14 +10,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import static cn.travellerr.Favorability.config;
 import static cn.travellerr.Favorability.version;
-import static cn.travellerr.version.downloadVersion.downloadLatest;
-import static cn.travellerr.version.downloadVersion.haveFile;
 
 public class checkLatestVersion {
+
+    /**
+     * 检查版本
+     *
+     * @author Travellerr
+     */
     public static void init() {
-        if (!haveFile) {
             try {
                 URL url = new URL("https://api.github.com/repos/Travellerrr/Favorability/releases/latest");
                 InputStream stream = url.openStream();
@@ -41,6 +42,9 @@ public class checkLatestVersion {
                             updateMsg = updateMsg.replace("#", "");
                             updateMsg = updateMsg.replace("\r\n", " ");
                             Log.warning(updateMsg);
+                            /*
+                            闲得没事干了我
+
                             if ((updateMsg.contains("重大") || updateMsg.contains("重要")) && config.getAutoUpdate()) {
                                 Log.warning("此版本为重大更新，开始在后台下载……");
                                 JsonArray assets = json.getAsJsonArray("assets");
@@ -50,6 +54,7 @@ public class checkLatestVersion {
                                 downloadLatest(downloadUrl, name);
 
                             }
+                            */
                         } else {
                             Log.error(" 无法获取更新日志！");
                         }
@@ -64,9 +69,6 @@ public class checkLatestVersion {
             } catch (Exception e) {
                 Log.error(e.fillInStackTrace().getMessage());
             }
-        } else {
-            Log.info("data下已有文件，已略过检查");
-        }
     }
 
     private static String getStringFromJson(JsonObject jsonObject, String key) {

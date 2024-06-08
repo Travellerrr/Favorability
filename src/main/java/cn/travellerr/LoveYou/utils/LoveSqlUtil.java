@@ -16,16 +16,25 @@ import java.util.Map;
 
 import static cn.travellerr.Favorability.loveYou;
 
+
 public class LoveSqlUtil {
 
+    /**
+     * 数据库路径
+     */
 
     private static final String DB_PATH = Favorability.INSTANCE.getDataFolderPath().toAbsolutePath().toString();
+
+    /**
+     * 数据库名称
+     */
     private static final String DB_NAME = "LoveYou.db";
 
     /**
+     * 创建名为Love的表
+     * @author Travellerr
      * @param conn 数据库连接
      * @throws SQLException 数据库异常
-     * @author Travellerr
      */
     private static void createLoveTable(Connection conn) throws SQLException {
         String sql = "CREATE TABLE IF NOT EXISTS LoveYou(" +
@@ -40,11 +49,12 @@ public class LoveSqlUtil {
 
 
     /**
+     * 上传该qq号新的对话消息
+     * @author Travellerr
      * @param conn 数据库连接
      * @param msg  qq消息
      * @param qq   qq号
      * @throws SQLException 数据库异常
-     * @author Travellerr
      */
     private static void uploadNewMsg(Connection conn, String msg, long qq) throws SQLException {
         String sql = "INSERT INTO LoveYou (QQ, msg, time) VALUES (?, ?, ?)";
@@ -58,11 +68,12 @@ public class LoveSqlUtil {
     }
 
     /**
+     * 获取该qq号下所有储存的消息
+     * @author Travellerr
      * @param conn 数据库连接
      * @param qq   qq号
      * @return 数据库查询记录
      * @throws SQLException 数据库异常
-     * @author Travellerr
      */
     private static Map<Integer, UserMsg> getUserAllMsg(Connection conn, long qq) throws SQLException {
         String sql = "SELECT msg, time FROM LoveYou WHERE QQ = ?";
@@ -82,9 +93,10 @@ public class LoveSqlUtil {
     }
 
     /**
+     * 获取数据库连接
+     * @author Travellerr
      * @return 数据库连接
      * @throws SQLException 数据库异常
-     * @author Travellerr
      */
     private static Connection getConnection() throws SQLException {
         String url = "jdbc:sqlite:" + Paths.get(LoveSqlUtil.DB_PATH, LoveSqlUtil.DB_NAME);
@@ -97,6 +109,7 @@ public class LoveSqlUtil {
     }
 
     /**
+     * 创建数据库文件
      * @author Travellerr
      */
     private static void createDataBase() {
@@ -112,11 +125,12 @@ public class LoveSqlUtil {
     }
 
     /**
+     * 删除过期的消息数据
+     * @author Travellerr
      * @param conn      数据库连接
      * @param qq        用户qq号
      * @param timeStamp 消息时间戳
      * @throws SQLException 数据库异常
-     * @author Travellerr
      */
     private static void removeExpiredMsg(Connection conn, long qq, long timeStamp) throws SQLException {
         String sql = "DELETE FROM LoveYou WHERE QQ = ? AND time = ?;";
@@ -126,15 +140,16 @@ public class LoveSqlUtil {
             insertStatement.setLong(2, timeStamp);
 
             insertStatement.executeUpdate();
+            Log.debug("Delete Message Successful!");
         }
     }
 
 
     /**
+     * 储存用户消息
+     * @author Travellerr
      * @param user QQ用户实例
      * @param msg  QQ消息
-     * @author Travellerr
-     * @implNote 储存用户消息
      */
     public static void saveMsg(User user, String msg) {
         try {
@@ -150,9 +165,9 @@ public class LoveSqlUtil {
     }
 
     /**
-     * @param user QQ用户实例
+     * 检查用户消息是否过期，并删除过期消息
      * @author Travellerr
-     * @implNote 检查用户消息是否过期，并删除过期消息
+     * @param user QQ用户实例
      */
     public static void checkUserMsgTime(User user) {
         try {
@@ -176,11 +191,11 @@ public class LoveSqlUtil {
     }
 
     /**
+     * 比对用户消息与数据库内存储消息是否相似
+     * @author Travellerr
      * @param user QQ用户实例
      * @param msg  QQ消息
      * @return 两则消息是否相似
-     * @author Travellerr
-     * @implNote 比对用户消息与数据库内存储消息是否相似
      */
     public static boolean isSimilarityMsg(User user, String msg) {
         try {

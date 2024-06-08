@@ -9,6 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class copyGiftJson {
+
+    /**
+     * 复制 礼物Json 文件到data目录
+     */
     public static void copy() {
         Path path = Path.of("./data/cn.travellerr.Favorability/gift.json");
         if (!Files.exists(path)) {

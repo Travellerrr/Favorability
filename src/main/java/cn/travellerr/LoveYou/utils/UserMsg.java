@@ -22,6 +22,7 @@ public class UserMsg {
     }
 
     public long getTimeStamp() {
+        Log.debug("存储时间戳: " + timeStamp);
         return timeStamp;
     }
 
@@ -30,6 +31,7 @@ public class UserMsg {
     }
 
     public String getMsg() {
+        Log.debug("存储消息: " + msg);
         return msg;
     }
 

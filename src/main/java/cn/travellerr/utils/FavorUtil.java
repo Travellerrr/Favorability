@@ -22,6 +22,15 @@ import static cn.travellerr.Favorability.msgConfig;
 
 
 public class FavorUtil {
+
+    /**
+     * 查看用户好感度
+     *
+     * @param subject 联系对象
+     * @param user    用户
+     * @param bot     机器人
+     * @author Travellerr
+     */
     public static void checkFavor(Contact subject, User user, Bot bot) {
         int exp = sqlUtil.getExp(user.getId());
         String originMsg = msgConfig.getCheckLove();
@@ -33,6 +42,13 @@ public class FavorUtil {
         //subject.sendMessage(new At(user.getId()).plus(String.format("\n%s对你的好感度为: %d\n%s", bot.getNick(), FavorLevel(exp), FavorMsg(FavorLevel(exp), user.getNick()))));
     }
 
+    /**
+     * 合成的好感信息
+     * @author Travellerr
+     * @param level  好感等级
+     * @param SenseiName 用户后缀
+     * @return 合成完毕的好感信息
+     */
     private static String FavorMsg(int level, String SenseiName) {
         PluginConfig config = PluginConfig.INSTANCE;
         String msg;
@@ -49,8 +65,11 @@ public class FavorUtil {
     }
 
 
-    /*
-     * 计算好感度等级
+    /**
+     * 计算好感等级
+     * @author Travellerr
+     * @param exp 好感经验
+     * @return 好感等级
      */
     private static int FavorLevel(int exp) {
         if (exp < 0) {
@@ -74,7 +93,12 @@ public class FavorUtil {
         return level;
     }
 
-
+    /**
+     * 将未知 列表 转换为 Integer类型 列表
+     * @author ChatGPT
+     * @param list 未知列表
+     * @return 整数列表
+     */
     private static List<Integer> castIntList(List<?> list) {
         List<Integer> result = new ArrayList<>();
         for (Object element : list) {
@@ -83,6 +107,12 @@ public class FavorUtil {
         return result;
     }
 
+    /**
+     * 将未知 列表 转换为 Long 列表
+     * @author ChatGPT
+     * @param list 未知列表
+     * @return 长整数列表
+     */
     private static List<Long> castLongList(List<?> list) {
         List<Long> result = new ArrayList<>();
         for (Object element : list) {
@@ -91,6 +121,12 @@ public class FavorUtil {
         return result;
     }
 
+    /**
+     * 获取对应群聊好感排行
+     * @author Travellerr
+     * @param subject 联系对象
+     * @param group 群聊
+     */
     public static void getLoveList(Contact subject, Group group) {
         // 获取数据
         Map<String, List<?>> info = sqlUtil.getListSql();
@@ -127,7 +163,11 @@ public class FavorUtil {
     }
 
 
-
+    /**
+     * 获取数据库中全部用户排行榜
+     * @author Travellerr
+     * @param subject 联系对象
+     */
     public static void getAllLoveList(Contact subject) {
         // 获取数据
         Map<String, List<?>> info = sqlUtil.getListSql();
@@ -162,6 +202,13 @@ public class FavorUtil {
     }
 
 
+    /**
+     * 好感作弊 <i>仅限调试用！</i>
+     * @author Travellerr
+     * @param user 用户
+     * @param exp 增减经验
+     * @param subject 联系对象
+     */
     public static void cheatLove(User user, int exp, Contact subject) {
         sqlUtil.addLove(exp, user.getId());
         subject.sendMessage(new At(user.getId())
