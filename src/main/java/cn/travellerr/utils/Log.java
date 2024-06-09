@@ -9,20 +9,20 @@ public class Log {
     private static final MiraiLogger log = Favorability.INSTANCE.getLogger();
     private static final String name = "好感度系统-";
 
-    public static void info(String msg) {
+    public static void info(Object msg) {
         log.info(name + msg);
     }
 
-    public static void warning(String msg) {
+    public static void warning(Object msg) {
         log.warning(name + msg);
     }
 
-    public static void error(String msg, IOException e) {
+    public static void error(Object msg, IOException e) {
         log.error(name + msg);
         e.fillInStackTrace();
     }
 
-    public static void error(String msg) {
+    public static void error(Object msg) {
         log.error(name + msg);
     }
 

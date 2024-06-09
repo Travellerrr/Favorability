@@ -1,6 +1,7 @@
 package cn.travellerr.makeMachine.make;
 
 //import cn.chahuyun.economy.utils.EconomyUtil;
+
 import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.config.PluginConfig;
 import cn.travellerr.utils.EconomyUtil;
@@ -73,6 +74,7 @@ public class makingMachine {
      */
     private static void createGift(Contact subject, User user, int money) {
         try {
+
             int time = RandomUtil.randomInt(config.getAtLeastMin(), config.getAtMostMin());
             //int time = 1;
 

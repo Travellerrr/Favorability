@@ -28,7 +28,7 @@ public class LoveSqlUtil {
     /**
      * 数据库名称
      */
-    private static final String DB_NAME = "LoveYou.db";
+    private static final String DB_NAME = "favorability.db";
 
     /**
      * 创建名为Love的表
@@ -76,7 +76,7 @@ public class LoveSqlUtil {
      * @throws SQLException 数据库异常
      */
     private static Map<Integer, UserMsg> getUserAllMsg(Connection conn, long qq) throws SQLException {
-        String sql = "SELECT msg, time FROM LoveYou WHERE QQ = ?";
+        String sql = "SELECT msg, time FROM LoveYou WHERE QQ = ? ORDER BY time ASC";
         try (PreparedStatement insertStatement = conn.prepareStatement(sql)) {
             insertStatement.setLong(1, qq);
 
@@ -86,6 +86,7 @@ public class LoveSqlUtil {
                 while (resultSet.next()) {
                     UserMsg userMsg = new UserMsg(resultSet.getString("msg"), resultSet.getLong("time"));
                     allMsg.put(index, userMsg);
+                    index++;
                 }
                 return allMsg;
             }
@@ -177,9 +178,10 @@ public class LoveSqlUtil {
             Map<Integer, UserMsg> map = getUserAllMsg(conn, user.getId());
             for (int index : map.keySet()) {
                 UserMsg userMsg = map.get(index);
-                if (userMsg.isTimesUp()) {
-                    removeExpiredMsg(conn, user.getId(), userMsg.getTimeStamp());
+                if (!userMsg.isTimesUp()) {
+                    break;
                 }
+                removeExpiredMsg(conn, user.getId(), userMsg.getTimeStamp());
             }
 
 
@@ -213,6 +215,7 @@ public class LoveSqlUtil {
             for (int index : map.keySet()) {
                 UserMsg userMsg = map.get(index);
                 float similarityValue = compareModel.similarity(msg, userMsg.getMsg());
+                Log.debug("分析消息相似度- 与 " + userMsg.getMsg() + " 分析，相似度为 " + similarityValue);
                 if (similarityValue >= 0.5) {
                     return true;
                 }
