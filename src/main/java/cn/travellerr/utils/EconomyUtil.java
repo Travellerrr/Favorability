@@ -17,6 +17,7 @@ public class EconomyUtil {
      */
     private static final IEconomyService service = EconomyService.INSTANCE;
 
+
     /**
      * 经济上下文
      */
@@ -26,6 +27,7 @@ public class EconomyUtil {
      * 经济货币
      */
     private static EconomyCurrency currency;
+    private static final int economyName = config.getEconomyName();
 
     /**
      * 获取用户货币
@@ -35,6 +37,7 @@ public class EconomyUtil {
      * @author Travellerr
      */
     public static Double getMoney(User user) {
+        init();
         EconomyAccount account = service.account(user);
         return context.get(account, currency);
     }
@@ -46,6 +49,7 @@ public class EconomyUtil {
      * @param money 货币数量
      */
     public static void plusMoney(User user, int money) {
+        init();
         EconomyAccount account = service.account(user);
 
         context.plusAssign(account, currency, money);
@@ -56,7 +60,6 @@ public class EconomyUtil {
      * @author Travellerr
      */
     public static void init() {
-        int economyName = config.getEconomyName();
         if (economyName == 0) {
             context = service.custom(HuYanEconomy.INSTANCE);
             currency = service.getBasket().get("hy-gold");
@@ -65,4 +68,6 @@ public class EconomyUtil {
             currency = service.getBasket().get("mirai-coin");
         }
     }
+
+
 }

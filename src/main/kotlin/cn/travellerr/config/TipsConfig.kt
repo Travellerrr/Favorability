@@ -5,8 +5,8 @@ import net.mamoe.mirai.console.data.ValueDescription
 import net.mamoe.mirai.console.data.value
 
 object TipsConfig : AutoSavePluginConfig("MsgConfig") {
-    @ValueDescription("好感度查看\n\"%成员%\"该成员名称\n\"%机器人%\"机器人名称\n\"%好感%\"好感度\n\"%好感信息%\"好感度消息")
-    val checkLove by value("%机器人%对你的好感度为: %好感度%\n%好感信息%")
+    @ValueDescription("好感度查看\n\"%成员%\"该成员名称\n\"%机器人%\"机器人名称\n\"%好感%\"好感度\n\"%好感经验%\"%好感经验%\n\"%好感信息%\"好感度消息")
+    val checkLove by value("%机器人%对你的好感度为: %好感度%\n好感经验为: %好感经验%\n%好感信息%")
 
 
     @ValueDescription("群好感度排行信息\n\"%成员%\"该成员名称\n\"%机器人%\"机器人名称\n\"%好感%\"好感度\n\"%后缀%\"设置的后缀\n")

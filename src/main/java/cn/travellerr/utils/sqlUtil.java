@@ -53,8 +53,9 @@ public class sqlUtil {
                 insertData(conn, qqNumber);
             }
             if (makingItem.isMaking()) return;
-            int chance = RandomUtil.randomInt(1, 100);
-            int itemLevel = money >= 200 ? (chance >= 75 ? 3 : 2) : (chance >= 95 ? 3 : 2);
+            int chance = RandomUtil.randomInt(1, 2000);
+            int itemLevel = chance <= money ? 3 : 2;
+            //int itemLevel = money >= 200 ? (chance >= 75 ? 3 : 2) : (chance >= 95 ? 3 : 2);
             makingItem.setItemLevel(itemLevel);
             updateData(conn, qqNumber, time, itemLevel);
         } catch (SQLException e) {
@@ -145,7 +146,8 @@ public class sqlUtil {
      * @return 是否用户的制造时间到
      * @throws SQLException 数据库异常
      */
-    private static boolean timesUp(Connection conn, long qqNumber, boolean clear) throws SQLException {
+    private static List<Object> timesUp(Connection conn, long qqNumber, boolean clear, boolean isQuickly) throws SQLException {
+        List<Object> list = new ArrayList<>();
         String getSql = "SELECT Time, makeTime FROM Favourite WHERE QQ = ?";
         try (PreparedStatement selectStmt = conn.prepareStatement(getSql)) {
             selectStmt.setLong(1, qqNumber);
@@ -154,21 +156,33 @@ public class sqlUtil {
                     long time = rs.getLong("Time");
                     long makeTime = rs.getLong("makeTime");
                     long currentTimeStamp = System.currentTimeMillis() / 1000;
-                    System.out.println(currentTimeStamp);
-                    System.out.println(time);
-                    makingItem.setNeedTime((int) (makeTime - (currentTimeStamp - time)) / 60);
+                    Log.debug(currentTimeStamp);
+                    Log.debug(time);
                     if (currentTimeStamp - time >= makeTime) {
                         if (clear) {
                             clearQueue(conn, qqNumber);
                         }
-                        return true;
+                        list.add(true);
+                    } else if (isQuickly) {
+                        if (clear) {
+                            clearQueue(conn, qqNumber);
+                        }
+                        list.add(true);
+                    } else {
+                        list.add(false);
                     }
+                    list.add((int) (makeTime - (currentTimeStamp - time)) / 60);
 
 
                 }
             }
         }
-        return false;
+        if (list.isEmpty()) {
+            list.add(true);
+            list.add(0);
+        }
+
+        return list;
     }
 
     /**
@@ -266,8 +280,7 @@ public class sqlUtil {
      * @param clear 是否清除
      * @author Travellerr
      */
-    public static void updateInfo(long qqNumber, boolean clear) {
-        makingItem = new MakingItem(0, false, false, 0);
+    public static void updateInfo(long qqNumber, boolean clear, boolean isQuickly) {
         // 数据库文件路径和连接URL
         String dbName = "favorability.db";
         String dbPath = Paths.get(directory, dbName).toString();
@@ -280,8 +293,10 @@ public class sqlUtil {
         createDirectory(directory);
         try (Connection conn = DriverManager.getConnection(url)) {
             createTable(conn);
-
-            makingItem = new MakingItem(getItemLevel(conn, qqNumber), isMaking(conn, qqNumber), timesUp(conn, qqNumber, clear), 0);
+            int level = getItemLevel(conn, qqNumber);
+            boolean making = isMaking(conn, qqNumber);
+            List<Object> list = timesUp(conn, qqNumber, clear, isQuickly);
+            makingItem = new MakingItem(level, making, (boolean) list.get(0), (int) list.get(1));
         } catch (SQLException e) {
             throw new RuntimeException("出错了~", e);
         }
@@ -414,5 +429,6 @@ public class sqlUtil {
 
         return information;
     }
+
 
 }

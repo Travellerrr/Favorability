@@ -103,5 +103,12 @@ public class MakingItem {
         this.needTime = needTime;
     }
 
+    public String printAll() {
+
+        return "物品等级: " + this.itemLevel +
+                "\n是否正在制作: " + this.isMaking +
+                "\n是否时间到" + this.timesUp +
+                "\n所需时间" + this.needTime;
+    }
 
 }

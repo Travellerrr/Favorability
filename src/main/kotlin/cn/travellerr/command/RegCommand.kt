@@ -12,5 +12,6 @@ object RegCommand {
         CommandManager.registerCommand(Debug)
         CommandManager.registerCommand(GetLoveList)
         CommandManager.registerCommand(GetAllLoveList)
+        CommandManager.registerCommand(CreateQuickly)
     }
 }

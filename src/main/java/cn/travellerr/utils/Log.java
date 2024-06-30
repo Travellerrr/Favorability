@@ -22,6 +22,11 @@ public class Log {
         e.fillInStackTrace();
     }
 
+    public static void error(Object msg, Throwable e) {
+        log.error(name + msg);
+        e.fillInStackTrace();
+    }
+
     public static void error(Object msg) {
         log.error(name + msg);
     }

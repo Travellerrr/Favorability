@@ -5,6 +5,7 @@ import cn.travellerr.config.LoveYou
 import cn.travellerr.config.PluginConfig
 import cn.travellerr.config.TipsConfig
 import cn.travellerr.makeMachine.make.makingMachine
+import cn.travellerr.makeMachine.make.makingMachine.checkItemQuickly
 import cn.travellerr.utils.EconomyUtil
 import cn.travellerr.utils.FavorUtil
 import cn.travellerr.utils.wtfUtil
@@ -14,7 +15,9 @@ import net.mamoe.mirai.console.plugin.jvm.reloadPluginConfig
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
+import net.mamoe.mirai.contact.getMember
 import net.mamoe.mirai.message.data.At
+import net.mamoe.mirai.message.data.SingleMessage
 
 object CheckMake :
     SimpleCommand(Favorability.INSTANCE, "checkMake", "查看制造", "查看制作", "查看", description = "查看制造队列") {
@@ -43,6 +46,16 @@ object Make : SimpleCommand(Favorability.INSTANCE, "makeItem", "制造", "制作
         val subject: Contact? = context.sender.subject
         val sender: User? = context.sender.user
         makingMachine.use(subject, sender, coin)
+    }
+
+    @Handler
+    suspend fun useLoveError(sender: CommandContext) {
+        val subject: Contact? = sender.sender.subject
+        val originMsg: SingleMessage = sender.originalMessage[1]
+        val prefix = originMsg.toString().split(" ")[0]
+        if (subject is Contact) {
+            subject.sendMessage("请使用 \"$prefix [所用金币数量]\"生成，不要加括号")
+        }
     }
 }
 
@@ -92,6 +105,8 @@ object GetLoveList : SimpleCommand(
     "好感度排行榜",
     "好感排行",
     "好感排行榜",
+    "好感排名",
+    "好感度排名",
     description = "本群好感排行"
 ) {
     @Handler
@@ -108,6 +123,8 @@ object GetAllLoveList : SimpleCommand(
     "好感度全排行榜",
     "好感全排行",
     "好感全排行榜",
+    "好感全排名",
+    "好感度全排名",
     description = "全部好感排行"
 ) {
     @Handler
@@ -117,6 +134,29 @@ object GetAllLoveList : SimpleCommand(
     }
 }
 
+object CreateQuickly : SimpleCommand(
+    Favorability.INSTANCE,
+    "quickCreate",
+    "急速完成",
+    "极速查看",
+    "急速查看",
+    "极速制造",
+    description = "无冷却制造"
+) {
+    @Handler
+    fun own(context: CommandContext) {
+        val subject: Contact? = context.sender.subject
+        val user: User? = context.sender.user
+        checkItemQuickly(subject, user)
+    }
+
+    @Handler
+    fun other(context: CommandContext, at: At) {
+        val subject: Contact? = context.sender.subject
+        val user: User? = context.sender.getGroupOrNull()?.getMember(at.target)
+        checkItemQuickly(subject, user)
+    }
+}
 
 /*object TestCommand : SimpleCommand(
     Favorability.INSTANCE,

@@ -25,7 +25,7 @@ public final class Favorability extends JavaPlugin {
     public static PluginConfig config;
     public static TipsConfig msgConfig;
     public static LoveYou loveYou;
-    public static final String version = "1.0.3";
+    public static final String version = "1.0.4";
 
     private Favorability() {
         super(new JvmPluginDescriptionBuilder("cn.travellerr.Favorability", version)

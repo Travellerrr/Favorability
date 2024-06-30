@@ -37,6 +37,7 @@ public class FavorUtil {
         originMsg = ReplaceMsg.Replace(originMsg, "%成员%", user.getNick());
         originMsg = ReplaceMsg.Replace(originMsg, "%机器人%", bot.getNick());
         originMsg = ReplaceMsg.Replace(originMsg, "%好感度%", FavorLevel(exp));
+        originMsg = ReplaceMsg.Replace(originMsg, "%好感经验%", exp);
         originMsg = ReplaceMsg.Replace(originMsg, "%好感信息%", FavorMsg(FavorLevel(exp), user.getNick()));
         subject.sendMessage(new At(user.getId()).plus("\n").plus(originMsg));
         //subject.sendMessage(new At(user.getId()).plus(String.format("\n%s对你的好感度为: %d\n%s", bot.getNick(), FavorLevel(exp), FavorMsg(FavorLevel(exp), user.getNick()))));
@@ -182,8 +183,7 @@ public class FavorUtil {
         String suffix = config.getSuffix();
         // 遍历并发送消息
         for (int i = 0; i < size; i++) {
-
-            String messageContent = msgConfig.getTotalLoveMsg();
+            String messageContent = msgConfig.getTotalLoveMsg() + "\n (" + uidName.get(i) + ")";
             messageContent = ReplaceMsg.Replace(messageContent, "%成员%", uidName.get(i));
             messageContent = ReplaceMsg.Replace(messageContent, "%机器人%", subject.getBot().getNick());
             messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
@@ -194,7 +194,7 @@ public class FavorUtil {
             Message message = new PlainText(messageContent);
 
             // 添加消息到转发器
-            forwardMessage.add(uidName.get(i), "第" + (i + 1) + "名" + config.getSuffix(), message);
+            forwardMessage.add(uidName.get(i), "第" + (i + 1) + "名" + " " + config.getSuffix(), message);
         }
 
         // 发送转发的消息

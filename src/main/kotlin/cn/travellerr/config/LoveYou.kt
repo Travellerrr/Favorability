@@ -8,6 +8,9 @@ object LoveYou : AutoSavePluginConfig("LoveYouConfig") {
     @ValueDescription("是否启用LoveYou")
     val enable: Boolean by value(false)
 
+    @ValueDescription("启用群聊，不填默认全部启用")
+    val enableGroup by value(longArrayOf(123))
+
     @ValueDescription("情感模型目录，以 本插件data目录为基准")
     val lovePath: String by value("/LoveYou/nb-classifier-for-weibo.ser")
 

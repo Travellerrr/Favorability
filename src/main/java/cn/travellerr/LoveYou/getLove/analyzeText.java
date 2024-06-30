@@ -28,6 +28,11 @@ import static cn.travellerr.Favorability.loveYou;
  */
 public class analyzeText {
 
+
+    private static final String path = Favorability.INSTANCE.getDataFolderPath() + loveYou.getLovePath();
+    private static final NaiveBayesModel model = (NaiveBayesModel) IOUtil.readObjectFrom(path);
+    private static final IClassifier classifier = new NaiveBayesClassifier(model);
+
     /**
      * 进行消息情感分析并处理好感度增幅
      * @author Travellerr
@@ -38,7 +43,6 @@ public class analyzeText {
             String originMsg = event.getMessage().serializeToMiraiCode();
             Contact subject = event.getSubject();
             User user = event.getSender();
-            String path = Favorability.INSTANCE.getDataFolderPath() + loveYou.getLovePath();
             String atMsg = new At(event.getBot().getId()).serializeToMiraiCode();
             originMsg = originMsg.substring(atMsg.length());
 
@@ -55,8 +59,7 @@ public class analyzeText {
                 return;
             }
 
-            NaiveBayesModel model = (NaiveBayesModel) IOUtil.readObjectFrom(path);
-            IClassifier classifier = new NaiveBayesClassifier(model);
+
             Map<String, Double> msg = classifier.predict(originMsg);
 
             //int ans = (int) (msg.get("1") * 100 - 50);

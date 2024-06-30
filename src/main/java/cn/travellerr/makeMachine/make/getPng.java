@@ -49,10 +49,10 @@ public class getPng {
                         JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
 
                         int id;
-                        if (itemLevel == 40) {
-                            id = RandomUtil.randomInt(39, 50);
+                        if (itemLevel > 2) {
+                            id = RandomUtil.randomInt(39, 51);
                         } else {
-                            id = RandomUtil.randomInt(1, 38);
+                            id = RandomUtil.randomInt(1, 39);
                         }
 
                         // 检查是否存在对应id的数据
