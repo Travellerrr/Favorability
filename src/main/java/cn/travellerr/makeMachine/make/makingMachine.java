@@ -5,6 +5,7 @@ package cn.travellerr.makeMachine.make;
 import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.config.PluginConfig;
 import cn.travellerr.utils.EconomyUtil;
+import cn.travellerr.utils.Log;
 import cn.travellerr.utils.sqlUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
@@ -78,7 +79,7 @@ public class makingMachine {
             int time = RandomUtil.randomInt(config.getAtLeastMin(), config.getAtMostMin());
             //int time = 1;
 
-            sqlUtil.updateInfo(user.getId(), false);
+            sqlUtil.updateInfo(user.getId(), false, false);
             if (!sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) { //时间未到且未领取制造物品
                 subject.sendMessage(new At(user.getId()).plus("队列中已有任务，请勿重复制造~"));
                 return;
@@ -103,7 +104,8 @@ public class makingMachine {
      */
     public static void checkItem(Contact subject, User user) {
         try {
-            sqlUtil.updateInfo(user.getId(), true);
+            sqlUtil.updateInfo(user.getId(), true, false);
+            Log.debug(sqlUtil.makingItem.printAll());
             if (sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) { //制造完毕且未领取物品
                 getPng.message(sqlUtil.makingItem.getItemLevel());
                 URL itemUrl = new URL(getPng.item.getUrl());
@@ -129,6 +131,39 @@ public class makingMachine {
             }
             if (!sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) {
                 subject.sendMessage(new At(user.getId()).plus(String.format("还没制作完成哦~还剩%d分钟\n预计制造物品等级: %d", sqlUtil.makingItem.getNeedTime(), sqlUtil.makingItem.getItemLevel())));
+                return;
+            }
+            subject.sendMessage(new At(user.getId()).plus("制造队列为空~"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void checkItemQuickly(Contact subject, User user) {
+        try {
+            sqlUtil.updateInfo(user.getId(), true, true);
+            Log.debug(sqlUtil.makingItem.printAll());
+            if (sqlUtil.makingItem.isMaking()) { //制造完毕且未领取物品
+                getPng.message(sqlUtil.makingItem.getItemLevel());
+                URL itemUrl = new URL(getPng.item.getUrl());
+                ExternalResource resource = ExternalResource.create(itemUrl.openStream());
+                Image item = subject.uploadImage(resource);
+                subject.sendMessage(
+                        new At(user.getId())
+                                .plus("\n")
+                                .plus(item)
+                                .plus("\n")
+                                .plus(getPng.item.getName())
+                                .plus("\n")
+                                .plus(getPng.item.getDescribe())
+                                .plus("\n等级：")
+                                .plus(getPng.item.getLevel())
+                                .plus("\n增加好感度：")
+                                .plus(String.valueOf(getPng.item.getLove()))
+                                .plus("\n")
+                );
+                sqlUtil.addLove(getPng.item.getLove(), user.getId());
+                resource.close();
                 return;
             }
             subject.sendMessage(new At(user.getId()).plus("制造队列为空~"));
