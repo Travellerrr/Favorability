@@ -13,6 +13,7 @@ import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.utils.ExternalResource;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -109,24 +110,41 @@ public class makingMachine {
             if (sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) { //制造完毕且未领取物品
                 getPng.message(sqlUtil.makingItem.getItemLevel());
                 URL itemUrl = new URL(getPng.item.getUrl());
-                ExternalResource resource = ExternalResource.create(itemUrl.openStream());
-                Image item = subject.uploadImage(resource);
-                subject.sendMessage(
-                        new At(user.getId())
-                                .plus("\n")
-                                .plus(item)
-                                .plus("\n")
-                                .plus(getPng.item.getName())
-                                .plus("\n")
-                                .plus(getPng.item.getDescribe())
-                                .plus("\n等级：")
-                                .plus(getPng.item.getLevel())
-                                .plus("\n增加好感度：")
-                                .plus(String.valueOf(getPng.item.getLove()))
-                                .plus("\n")
-                );
-                sqlUtil.addLove(getPng.item.getLove(), user.getId());
-                resource.close();
+                try (ExternalResource resource = ExternalResource.create(itemUrl.openStream())) {
+                    Image item = subject.uploadImage(resource);
+                    subject.sendMessage(
+                            new At(user.getId())
+                                    .plus("\n")
+                                    .plus(item)
+                                    .plus("\n")
+                                    .plus(getPng.item.getName())
+                                    .plus("\n")
+                                    .plus(getPng.item.getDescribe())
+                                    .plus("\n等级：")
+                                    .plus(getPng.item.getLevel())
+                                    .plus("\n增加好感度：")
+                                    .plus(String.valueOf(getPng.item.getLove()))
+                                    .plus("\n")
+                    );
+                    sqlUtil.addLove(getPng.item.getLove(), user.getId());
+                } catch (IOException e) {
+                    subject.sendMessage(
+                            new At(user.getId())
+                                    .plus("\n")
+                                    .plus("[图片消失了XwX, 原因: " + e.getMessage() + "]")
+                                    .plus("\n")
+                                    .plus(getPng.item.getName())
+                                    .plus("\n")
+                                    .plus(getPng.item.getDescribe())
+                                    .plus("\n等级：")
+                                    .plus(getPng.item.getLevel())
+                                    .plus("\n增加好感度：")
+                                    .plus(String.valueOf(getPng.item.getLove()))
+                                    .plus("\n")
+                    );
+                    sqlUtil.addLove(getPng.item.getLove(), user.getId());
+                    throw new RuntimeException(e);
+                }
                 return;
             }
             if (!sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) {
