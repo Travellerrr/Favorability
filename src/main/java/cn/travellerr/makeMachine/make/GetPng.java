@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class getPng {
+public class GetPng {
 
     /**
      * 物品实例
@@ -40,7 +40,7 @@ public class getPng {
      * @param itemLevel 物品等级
      */
     public static void message(int itemLevel) {
-        try (InputStream inputStream = getPng.class.getClassLoader().getResourceAsStream("gift.json")) {
+        try (InputStream inputStream = GetPng.class.getClassLoader().getResourceAsStream("gift.json")) {
             if (inputStream != null) {
                 try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
                     if (scanner.hasNext()) {

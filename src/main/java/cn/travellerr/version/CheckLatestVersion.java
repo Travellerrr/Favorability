@@ -12,7 +12,7 @@ import java.net.URL;
 
 import static cn.travellerr.Favorability.version;
 
-public class checkLatestVersion {
+public class CheckLatestVersion {
 
     /**
      * 检查版本

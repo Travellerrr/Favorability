@@ -10,7 +10,7 @@ import net.mamoe.mirai.utils.ExternalResource;
 import java.net.URL;
 import java.time.Year;
 
-public class wtfUtil {
+public class DoxxingUtil {
     public static void use(Contact subject, User user) {
         try {
             UserProfile profile = user.queryProfile();

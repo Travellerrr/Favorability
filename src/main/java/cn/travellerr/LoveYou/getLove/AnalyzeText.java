@@ -4,7 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.Favorability;
 import cn.travellerr.LoveYou.utils.LoveSqlUtil;
 import cn.travellerr.utils.Log;
-import cn.travellerr.utils.sqlUtil;
+import cn.travellerr.utils.SqlUtil;
 import com.hankcs.hanlp.classification.classifiers.IClassifier;
 import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
 import com.hankcs.hanlp.classification.models.NaiveBayesModel;
@@ -18,6 +18,8 @@ import net.mamoe.mirai.message.data.QuoteReply;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static cn.travellerr.Favorability.loveYou;
 
@@ -26,12 +28,13 @@ import static cn.travellerr.Favorability.loveYou;
  *
  * @author Travellerr
  */
-public class analyzeText {
+public class AnalyzeText {
 
 
     private static final String path = Favorability.INSTANCE.getDataFolderPath() + loveYou.getLovePath();
     private static final NaiveBayesModel model = (NaiveBayesModel) IOUtil.readObjectFrom(path);
     private static final IClassifier classifier = new NaiveBayesClassifier(model);
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(10); // 创建一个固定大小的线程池
 
     /**
      * 进行消息情感分析并处理好感度增幅
@@ -39,71 +42,74 @@ public class analyzeText {
      * @param event 消息实例
      */
     public static void analyzeMsg(MessageEvent event) {
-        try {
-            String originMsg = event.getMessage().serializeToMiraiCode();
-            Contact subject = event.getSubject();
-            User user = event.getSender();
-            String atMsg = new At(event.getBot().getId()).serializeToMiraiCode();
-            originMsg = originMsg.substring(atMsg.length());
+        executorService.submit(() -> {
+            try {
+                String originMsg = event.getMessage().serializeToMiraiCode();
+                Contact subject = event.getSubject();
+                User user = event.getSender();
+                String atMsg = new At(event.getBot().getId()).serializeToMiraiCode();
+                originMsg = originMsg.substring(atMsg.length());
 
-            if (originMsg.startsWith(" ")) {
-                originMsg = originMsg.substring(1);
+                if (originMsg.startsWith(" ")) {
+                    originMsg = originMsg.substring(1);
+                }
+
+                LoveSqlUtil.checkUserMsgTime(user);
+                if (LoveSqlUtil.isSimilarityMsg(user, originMsg)) {
+                    List<String> msg = loveYou.getSimilarity();
+
+                    int index = RandomUtil.randomInt(0, msg.size());
+                    subject.sendMessage(msg.get(index));
+                    return;
+                }
+
+                Log.debug("开始进行情感分析");
+
+                Map<String, Double> msg = classifier.predict(originMsg);
+
+                Log.debug("HanLP分析变化: " + msg.get("1"));
+                int ans = (int) ((mapSentimentScore(msg.get("1"), loveYou.getLoveMax(), loveYou.getLoveMin())) * 200 - 100);
+                Log.debug("情感变化：" + ans);
+
+                int index;
+                String replyMsg;
+                String expChange;
+
+                if (ans > 0) {
+                    Log.debug("情感上涨");
+                    List<String> up = loveYou.getUp();
+                    index = RandomUtil.randomInt(0, up.size());
+
+                    replyMsg = up.get(index);
+                    expChange = characterNum("+", ans);
+                } else if (ans == 0) {
+
+                    Log.debug("情感持平");
+                    List<String> flat = loveYou.getFlat();
+                    index = RandomUtil.randomInt(0, flat.size());
+
+                    replyMsg = flat.get(index);
+                    expChange = "=";
+                } else {
+
+                    Log.debug("情感下降");
+                    List<String> down = loveYou.getDown();
+                    index = RandomUtil.randomInt(0, down.size());
+
+                    expChange = characterNum("-", ans);
+                    replyMsg = down.get(index);
+                }
+
+                SqlUtil.addLove(ans, event.getSender().getId());
+                QuoteReply reply = new QuoteReply(event.getMessage());
+                subject.sendMessage(reply.plus(new PlainText(replyMsg + "  \n【变化：" + expChange + "】")));
+
+                LoveSqlUtil.saveMsg(user, originMsg);
+            } catch (Exception e) {
+                Log.error(e.fillInStackTrace().getMessage());
             }
+        });
 
-            LoveSqlUtil.checkUserMsgTime(user);
-            if (LoveSqlUtil.isSimilarityMsg(user, originMsg)) {
-                List<String> msg = loveYou.getSimilarity();
-
-                int index = RandomUtil.randomInt(0, msg.size());
-                subject.sendMessage(msg.get(index));
-                return;
-            }
-
-
-            Map<String, Double> msg = classifier.predict(originMsg);
-
-            //int ans = (int) (msg.get("1") * 100 - 50);
-            Log.debug("HanLP分析变化: " + msg.get("1"));
-            int ans = (int) ((mapSentimentScore(msg.get("1"), loveYou.getLoveMax(), loveYou.getLoveMin())) * 200 - 100);
-            Log.debug("情感变化：" + ans);
-
-            int index;
-            String replyMsg;
-            String expChange;
-
-            if (ans > 0) {
-                Log.debug("情感上涨");
-                List<String> up = loveYou.getUp();
-                index = RandomUtil.randomInt(0, up.size());
-
-                replyMsg = up.get(index);
-                expChange = characterNum("+", ans);
-            } else if (ans == 0) {
-
-                Log.debug("情感持平");
-                List<String> flat = loveYou.getFlat();
-                index = RandomUtil.randomInt(0, flat.size());
-
-                replyMsg = flat.get(index);
-                expChange = "=";
-            } else {
-
-                Log.debug("情感下降");
-                List<String> down = loveYou.getDown();
-                index = RandomUtil.randomInt(0, down.size());
-
-                expChange = characterNum("-", ans);
-                replyMsg = down.get(index);
-            }
-
-            sqlUtil.addLove(ans, event.getSender().getId());
-            QuoteReply reply = new QuoteReply(event.getMessage());
-            subject.sendMessage(reply.plus(new PlainText(replyMsg + "  \n【变化：" + expChange + "】")));
-
-            LoveSqlUtil.saveMsg(user, originMsg);
-        } catch (Exception e) {
-            Log.error(e.fillInStackTrace().getMessage());
-        }
     }
 
     /**

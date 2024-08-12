@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public class copyGiftJson {
+public class CopyGiftJson {
 
     /**
      * 复制 礼物Json 文件到data目录
@@ -22,7 +22,7 @@ public class copyGiftJson {
             try {
                 Files.createDirectories(path);
                 // 获取类资源文件的输入流
-                InputStream inputStream = copyGiftJson.class.getClassLoader().getResourceAsStream(sourcePath);
+                InputStream inputStream = CopyGiftJson.class.getClassLoader().getResourceAsStream(sourcePath);
                 if (inputStream == null) {
                     Log.error("出错啦~: 未找到Gift资源");
                     return;

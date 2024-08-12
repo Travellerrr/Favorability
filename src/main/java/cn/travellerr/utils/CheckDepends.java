@@ -3,7 +3,7 @@ package cn.travellerr.utils;
 import cn.travellerr.Favorability;
 import net.mamoe.mirai.console.MiraiConsole;
 
-public class checkDepends {
+public class CheckDepends {
 
     /**
      * 查看前置是否启用

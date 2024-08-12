@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class sqlUtil {
+public class SqlUtil {
    /* public static int itemLevel;
     public static boolean isMaking;
     public static boolean timesUp;
@@ -53,7 +53,7 @@ public class sqlUtil {
                 insertData(conn, qqNumber);
             }
             if (makingItem.isMaking()) return;
-            int chance = RandomUtil.randomInt(1, 2000);
+            int chance = RandomUtil.randomInt(1, 5001);
             int itemLevel = chance <= money ? 3 : 2;
             //int itemLevel = money >= 200 ? (chance >= 75 ? 3 : 2) : (chance >= 95 ? 3 : 2);
             makingItem.setItemLevel(itemLevel);

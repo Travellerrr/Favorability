@@ -6,7 +6,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.config.PluginConfig;
 import cn.travellerr.utils.EconomyUtil;
 import cn.travellerr.utils.Log;
-import cn.travellerr.utils.sqlUtil;
+import cn.travellerr.utils.SqlUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.At;
@@ -20,7 +20,7 @@ import java.util.List;
 import static cn.travellerr.Favorability.config;
 import static cn.travellerr.Favorability.msgConfig;
 
-public class makingMachine {
+public class MakingMachine {
 
     /**
      * 使用 <strong><i>/制造 [金币]</i></strong> 指令
@@ -80,17 +80,17 @@ public class makingMachine {
             int time = RandomUtil.randomInt(config.getAtLeastMin(), config.getAtMostMin());
             //int time = 1;
 
-            sqlUtil.updateInfo(user.getId(), false, false);
-            if (!sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) { //时间未到且未领取制造物品
+            SqlUtil.updateInfo(user.getId(), false, false);
+            if (!SqlUtil.makingItem.isTimesUp() && SqlUtil.makingItem.isMaking()) { //时间未到且未领取制造物品
                 subject.sendMessage(new At(user.getId()).plus("队列中已有任务，请勿重复制造~"));
                 return;
             }
-            if (sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) { //时间已到且未领取制造物品
+            if (SqlUtil.makingItem.isTimesUp() && SqlUtil.makingItem.isMaking()) { //时间已到且未领取制造物品
                 subject.sendMessage(new At(user.getId()).plus("制造完喽~先领取物品吧~"));
                 return;
             }
-            sqlUtil.startMake(user.getId(), money, time * 60L);
-            subject.sendMessage(new At(user.getId()).plus(String.format("开始制造，时间：%d 分钟，物品等级: %s \n 请在时间到后发送\"#查看制造\"获取物品", time, sqlUtil.makingItem.getItemLevel())));
+            SqlUtil.startMake(user.getId(), money, time * 60L);
+            subject.sendMessage(new At(user.getId()).plus(String.format("开始制造，时间：%d 分钟，物品等级: %s \n 请在时间到后发送\"#查看制造\"获取物品", time, SqlUtil.makingItem.getItemLevel())));
             EconomyUtil.plusMoney(user, -money);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -105,11 +105,11 @@ public class makingMachine {
      */
     public static void checkItem(Contact subject, User user) {
         try {
-            sqlUtil.updateInfo(user.getId(), true, false);
-            Log.debug(sqlUtil.makingItem.printAll());
-            if (sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) { //制造完毕且未领取物品
-                getPng.message(sqlUtil.makingItem.getItemLevel());
-                URL itemUrl = new URL(getPng.item.getUrl());
+            SqlUtil.updateInfo(user.getId(), true, false);
+            Log.debug(SqlUtil.makingItem.printAll());
+            if (SqlUtil.makingItem.isTimesUp() && SqlUtil.makingItem.isMaking()) { //制造完毕且未领取物品
+                GetPng.message(SqlUtil.makingItem.getItemLevel());
+                URL itemUrl = new URL(GetPng.item.getUrl());
                 try (ExternalResource resource = ExternalResource.create(itemUrl.openStream())) {
                     Image item = subject.uploadImage(resource);
                     subject.sendMessage(
@@ -117,38 +117,38 @@ public class makingMachine {
                                     .plus("\n")
                                     .plus(item)
                                     .plus("\n")
-                                    .plus(getPng.item.getName())
+                                    .plus(GetPng.item.getName())
                                     .plus("\n")
-                                    .plus(getPng.item.getDescribe())
+                                    .plus(GetPng.item.getDescribe())
                                     .plus("\n等级：")
-                                    .plus(getPng.item.getLevel())
+                                    .plus(GetPng.item.getLevel())
                                     .plus("\n增加好感度：")
-                                    .plus(String.valueOf(getPng.item.getLove()))
+                                    .plus(String.valueOf(GetPng.item.getLove()))
                                     .plus("\n")
                     );
-                    sqlUtil.addLove(getPng.item.getLove(), user.getId());
+                    SqlUtil.addLove(GetPng.item.getLove(), user.getId());
                 } catch (IOException e) {
                     subject.sendMessage(
                             new At(user.getId())
                                     .plus("\n")
                                     .plus("[图片消失了XwX, 原因: " + e.getMessage() + "]")
                                     .plus("\n")
-                                    .plus(getPng.item.getName())
+                                    .plus(GetPng.item.getName())
                                     .plus("\n")
-                                    .plus(getPng.item.getDescribe())
+                                    .plus(GetPng.item.getDescribe())
                                     .plus("\n等级：")
-                                    .plus(getPng.item.getLevel())
+                                    .plus(GetPng.item.getLevel())
                                     .plus("\n增加好感度：")
-                                    .plus(String.valueOf(getPng.item.getLove()))
+                                    .plus(String.valueOf(GetPng.item.getLove()))
                                     .plus("\n")
                     );
-                    sqlUtil.addLove(getPng.item.getLove(), user.getId());
+                    SqlUtil.addLove(GetPng.item.getLove(), user.getId());
                     throw new RuntimeException(e);
                 }
                 return;
             }
-            if (!sqlUtil.makingItem.isTimesUp() && sqlUtil.makingItem.isMaking()) {
-                subject.sendMessage(new At(user.getId()).plus(String.format("还没制作完成哦~还剩%d分钟\n预计制造物品等级: %d", sqlUtil.makingItem.getNeedTime(), sqlUtil.makingItem.getItemLevel())));
+            if (!SqlUtil.makingItem.isTimesUp() && SqlUtil.makingItem.isMaking()) {
+                subject.sendMessage(new At(user.getId()).plus(String.format("还没制作完成哦~还剩%d分钟\n预计制造物品等级: %d", SqlUtil.makingItem.getNeedTime(), SqlUtil.makingItem.getItemLevel())));
                 return;
             }
             subject.sendMessage(new At(user.getId()).plus("制造队列为空~"));
@@ -159,11 +159,11 @@ public class makingMachine {
 
     public static void checkItemQuickly(Contact subject, User user) {
         try {
-            sqlUtil.updateInfo(user.getId(), true, true);
-            Log.debug(sqlUtil.makingItem.printAll());
-            if (sqlUtil.makingItem.isMaking()) { //制造完毕且未领取物品
-                getPng.message(sqlUtil.makingItem.getItemLevel());
-                URL itemUrl = new URL(getPng.item.getUrl());
+            SqlUtil.updateInfo(user.getId(), true, true);
+            Log.debug(SqlUtil.makingItem.printAll());
+            if (SqlUtil.makingItem.isMaking()) { //制造完毕且未领取物品
+                GetPng.message(SqlUtil.makingItem.getItemLevel());
+                URL itemUrl = new URL(GetPng.item.getUrl());
                 ExternalResource resource = ExternalResource.create(itemUrl.openStream());
                 Image item = subject.uploadImage(resource);
                 subject.sendMessage(
@@ -171,16 +171,16 @@ public class makingMachine {
                                 .plus("\n")
                                 .plus(item)
                                 .plus("\n")
-                                .plus(getPng.item.getName())
+                                .plus(GetPng.item.getName())
                                 .plus("\n")
-                                .plus(getPng.item.getDescribe())
+                                .plus(GetPng.item.getDescribe())
                                 .plus("\n等级：")
-                                .plus(getPng.item.getLevel())
+                                .plus(GetPng.item.getLevel())
                                 .plus("\n增加好感度：")
-                                .plus(String.valueOf(getPng.item.getLove()))
+                                .plus(String.valueOf(GetPng.item.getLove()))
                                 .plus("\n")
                 );
-                sqlUtil.addLove(getPng.item.getLove(), user.getId());
+                SqlUtil.addLove(GetPng.item.getLove(), user.getId());
                 resource.close();
                 return;
             }
