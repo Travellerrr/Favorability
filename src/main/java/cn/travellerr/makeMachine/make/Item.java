@@ -81,7 +81,7 @@ public class Item {
      * @return 物品的好感exp
      * @author Travellerr
      */
-    public int getLove() {
+    public long getLove() {
         return love;
     }
 

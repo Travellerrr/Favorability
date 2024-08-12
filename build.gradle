@@ -6,17 +6,18 @@ plugins {
 }
 
 group = 'cn.travellerr'
-version = '1.0.4'
+version = '1.0.5'
 
 repositories {
-    //maven { url 'https://maven.aliyun.com/repository/public' }
+    maven { url 'https://maven.aliyun.com/repository/public' }
     mavenCentral()
 }
 dependencies {
     compileOnly "xyz.cssxsh.mirai:mirai-hibernate-plugin:2.8.0"
-    compileOnly "xyz.cssxsh.mirai:mirai-economy-core:1.0.6"
-    compileOnly files("./libs/HuYanEconomy-0.1.16.jar")
-    compileOnly files("./libs/MiraiDailySign-0.1.1.mirai2.jar")
+    compileOnly "xyz.cssxsh.mirai:mirai-economy-core:latest.release"
+    compileOnly "cn.chahuyun:HuYanEconomy:latest.release"
+    //compileOnly files("./libs/HuYanEconomy-0.2.1.mirai2.jar")
+    //compileOnly files("./libs/MiraiDailySign-0.1.1.mirai2.jar")
 
 
     implementation 'com.hankcs:hanlp:portable-1.8.4'

@@ -99,7 +99,7 @@ object Debug : CompositeCommand(Favorability.INSTANCE, "Favor", description = "�
 
     @SubCommand("cheatLoveExp", "好感增加", "好感度增加", "好感作弊")
     @Description("强制增加/减少好感度")
-    fun cheatLoveExp(context: CommandContext, exp: Int) {
+    fun cheatLoveExp(context: CommandContext, exp: Long) {
         val subject: Contact? = context.sender.subject
         val user: User? = context.sender.user
         FavorUtil.cheatLove(user, exp, subject)

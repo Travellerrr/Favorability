@@ -308,7 +308,7 @@ public class SqlUtil {
      * @param qqNumber QQ号码
      * @author Travellerr
      */
-    public static void addLove(int exp, long qqNumber) {
+    public static void addLove(long exp, long qqNumber) {
         // SQL语句用于获取指定QQ号的经验值
         String getSql = "SELECT exp FROM Favourite WHERE QQ = ?";
         // SQL语句用于更新指定QQ号的经验值
@@ -317,7 +317,7 @@ public class SqlUtil {
         String dbName = "favorability.db";
         String dbPath = Paths.get(directory, dbName).toString();
         String url = "jdbc:sqlite:" + dbPath;
-        int before = 0;
+        long before = 0;
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
@@ -329,7 +329,8 @@ public class SqlUtil {
                 selectStmt.setLong(1, qqNumber);
                 try (ResultSet rs = selectStmt.executeQuery()) {
                     if (rs.next()) {
-                        before = rs.getInt("exp");
+                        before = rs.getLong("exp");
+                        Log.debug("获取到的经验: " + before);
                     }
                 }
             }
