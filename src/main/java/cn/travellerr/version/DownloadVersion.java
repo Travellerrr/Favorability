@@ -12,7 +12,6 @@ import java.nio.file.StandardCopyOption;
 
 
 /**
- * @author Travellerr
  * 是这样的，插件有用户用就行了，而我写代码的就考虑的多了，有没有用，脑子坏没坏……
  * @deprecated 2024-06-08
  */
@@ -22,6 +21,7 @@ public class DownloadVersion {
     public static Boolean haveFile = false;
     public static File file;
 
+    @Deprecated(since = "2024-06-08")
     public static void downloadLatest(URL url, String name) {
         try (InputStream downloadFile = url.openStream()) {
             Path path = Favorability.INSTANCE.getDataFolderPath();
