@@ -1,6 +1,6 @@
 package cn.travellerr.LoveYou.event;
 
-import cn.travellerr.LoveYou.getLove.analyzeText;
+import cn.travellerr.LoveYou.getLove.AnalyzeText;
 import cn.travellerr.utils.Log;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.contact.BotIsBeingMutedException;
@@ -54,13 +54,13 @@ public class GroupMessageEventListener extends SimpleListenerHost {
         if (enableGroup.length > 0) {
             for (long group : enableGroup) {
                 if (event.getGroup().getId() == group && Pattern.matches(regex, event.getMessage().serializeToMiraiCode())) {
-                    analyzeText.analyzeMsg(event);
+                    AnalyzeText.analyzeMsg(event);
                     break; // 如果匹配成功，立即跳出循环
                 }
             }
         } else {
             if (Pattern.matches(regex, event.getMessage().serializeToMiraiCode())) {
-                analyzeText.analyzeMsg(event);
+                AnalyzeText.analyzeMsg(event);
             }
         }
 

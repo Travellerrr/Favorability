@@ -4,11 +4,11 @@ import cn.travellerr.Favorability
 import cn.travellerr.config.LoveYou
 import cn.travellerr.config.PluginConfig
 import cn.travellerr.config.TipsConfig
-import cn.travellerr.makeMachine.make.makingMachine
-import cn.travellerr.makeMachine.make.makingMachine.checkItemQuickly
+import cn.travellerr.makeMachine.make.MakingMachine
+import cn.travellerr.makeMachine.make.MakingMachine.checkItemQuickly
+import cn.travellerr.utils.DoxxingUtil
 import cn.travellerr.utils.EconomyUtil
 import cn.travellerr.utils.FavorUtil
-import cn.travellerr.utils.wtfUtil
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.console.command.*
 import net.mamoe.mirai.console.plugin.jvm.reloadPluginConfig
@@ -25,12 +25,20 @@ object CheckMake :
     fun useMake(context: CommandContext) {
         val subject: Contact? = context.sender.subject
         val sender: User? = context.sender.user
-        makingMachine.checkItem(subject, sender)
+        MakingMachine.checkItem(subject, sender)
     }
 }
 
 object CheckLove :
-    SimpleCommand(Favorability.INSTANCE, "checkLove", "查看好感度", "好感度", "好感", description = "查看好感度") {
+    SimpleCommand(
+        Favorability.INSTANCE,
+        "checkLove",
+        "查看好感度",
+        "查看好感",
+        "好感度",
+        "好感",
+        description = "查看好感度"
+    ) {
     @Handler
     fun useLove(context: CommandContext) {
         val subject: Contact? = context.sender.subject
@@ -45,7 +53,7 @@ object Make : SimpleCommand(Favorability.INSTANCE, "makeItem", "制造", "制作
     fun useLove(context: CommandContext, coin: Long) {
         val subject: Contact? = context.sender.subject
         val sender: User? = context.sender.user
-        makingMachine.use(subject, sender, coin)
+        MakingMachine.use(subject, sender, coin)
     }
 
     @Handler
@@ -65,7 +73,7 @@ object OpenOthers : SimpleCommand(Favorability.INSTANCE, "Doxxing", "盒", descr
         val subject: Contact? = context.sender.subject
         val sender: User? = context.sender.user
         val group: Group? = context.sender.getGroupOrNull()
-        wtfUtil.useToOther(subject, sender, group, qqId)
+        DoxxingUtil.useToOther(subject, sender, group, qqId)
     }
 }
 
@@ -74,7 +82,7 @@ object Open : SimpleCommand(Favorability.INSTANCE, "DoxxingMe", "盒我", descri
     fun useLove(context: CommandContext) {
         val subject: Contact? = context.sender.subject
         val sender: User? = context.sender.user
-        wtfUtil.use(subject, sender)
+        DoxxingUtil.use(subject, sender)
     }
 }
 
@@ -158,17 +166,6 @@ object CreateQuickly : SimpleCommand(
     }
 }
 
-/*object TestCommand : SimpleCommand(
-    Favorability.INSTANCE,
-    "test",
-    description = "测试"
-) {
-    @Handler
-    fun reload(context: CommandContext) {
-        val subject: Contact? = context.sender.subject
-        val user : User? = context.sender.user;
-        EconomyUtil.register(user, subject)
-    }
-}*/
+
 
 
