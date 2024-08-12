@@ -1,7 +1,7 @@
 package cn.travellerr.cronJob
 
 import cn.travellerr.utils.Log
-import cn.travellerr.version.checkLatestVersion
+import cn.travellerr.version.CheckLatestVersion
 import org.quartz.*
 import org.quartz.impl.StdSchedulerFactory
 
@@ -27,6 +27,6 @@ fun cronJob() {
 
 class CheckVersion : Job {
     override fun execute(context: JobExecutionContext) {
-        checkLatestVersion.init()
+        CheckLatestVersion.init()
     }
 }
