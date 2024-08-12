@@ -50,9 +50,13 @@ public final class Favorability extends JavaPlugin {
         loveYou = cn.travellerr.config.LoveYou.INSTANCE;
         RegCommand.INSTANCE.registerCommand();
 
-        if (config.getEconomyName() == 0 && !HuYanEconomy.INSTANCE.isEnabled()) {
-            CheckDepends.init();
-            return;
+        if (config.getEconomyName() == 0) {
+            if (!HuYanEconomy.INSTANCE.isEnabled()) {
+                CheckDepends.init();
+                return;
+            }
+
+            LoveTitleManager.init();
         }
 
         if (loveYou.getEnable()) {
@@ -66,8 +70,8 @@ public final class Favorability extends JavaPlugin {
 
 
         EconomyUtil.init();
-        LoveTitleManager.init();
         CheckLatestVersion.init();
+        LoveTitleManager.init();
         CopyGiftJson.copy();
         getLogger().info("插件已加载！!");
         cronJob();

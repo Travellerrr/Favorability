@@ -15,9 +15,9 @@ import java.awt.*;
 
 public class LoveTitleManager {
     /**
-     * 初始化方法，注册两个称号模板。
+     * 初始化方法，注册n个称号模板。
      * <p>
-     * 该方法在程序启动时调用，用于注册两个称号模板，分别对应好感等级10和好感等级20。
+     * 该方法在程序启动时调用，用于注册n个称号模板.
      *
      * @see TitleTemplateManager#registerTitleTemplate(TitleTemplate[])
      */
@@ -53,6 +53,16 @@ public class LoveTitleManager {
                         "[好感60]",
                         ImageUtil.colorHex(new Color(75, 210, 174)),
                         ImageUtil.colorHex(new Color(54, 97, 189))
+                ),
+                new TitleTemplateSimpleImpl(
+                        LoveTitleCode.LOVE_CODE[3],
+                        LoveTitleCode.LOVE_EXPIRED,
+                        "好感80",
+                        true,
+                        false,
+                        "[好感80]",
+                        ImageUtil.colorHex(new Color(75, 122, 210)),
+                        ImageUtil.colorHex(new Color(185, 54, 189))
                 )
         );
     }
