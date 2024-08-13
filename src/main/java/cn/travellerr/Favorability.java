@@ -18,8 +18,6 @@ import net.mamoe.mirai.event.Event;
 import net.mamoe.mirai.event.EventChannel;
 import net.mamoe.mirai.event.GlobalEventChannel;
 
-import static cn.travellerr.cronJob.CheckVersionKt.cronJob;
-
 public final class Favorability extends JavaPlugin {
     public static final Favorability INSTANCE = new Favorability();
     public static PluginConfig config;
@@ -74,7 +72,7 @@ public final class Favorability extends JavaPlugin {
         LoveTitleManager.init();
         CopyGiftJson.copy();
         getLogger().info("插件已加载！!");
-        cronJob();
+        CheckLatestVersion.init();
 
     }
 
