@@ -63,6 +63,16 @@ public class LoveTitleManager {
                         "[好感80]",
                         ImageUtil.colorHex(new Color(75, 122, 210)),
                         ImageUtil.colorHex(new Color(185, 54, 189))
+                ),
+                new TitleTemplateSimpleImpl(
+                        LoveTitleCode.LOVE_CODE[4],
+                        LoveTitleCode.LOVE_EXPIRED,
+                        "好感100",
+                        true,
+                        false,
+                        "[好感100]",
+                        ImageUtil.colorHex(new Color(210, 75, 75)),
+                        ImageUtil.colorHex(new Color(54, 148, 189))
                 )
         );
     }
