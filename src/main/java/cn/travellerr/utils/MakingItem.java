@@ -2,9 +2,24 @@ package cn.travellerr.utils;
 
 public class MakingItem {
 
+    /**
+     * 物品等级
+     */
     private int itemLevel;
+
+    /**
+     * 是否在制作
+     */
     private boolean isMaking;
+
+    /**
+     * 是否时间已到
+     */
     private boolean timesUp;
+
+    /**
+     * 所需时间
+     */
     private int needTime;
 
     /**
@@ -103,6 +118,11 @@ public class MakingItem {
         this.needTime = needTime;
     }
 
+    /**
+     * 返回<code>MakingItem</code>对象所有变量内容
+     *
+     * @return 对象数据
+     */
     public String printAll() {
 
         return "物品等级: " + this.itemLevel +
