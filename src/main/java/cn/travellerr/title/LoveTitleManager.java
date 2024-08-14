@@ -7,6 +7,7 @@ import cn.chahuyun.economy.entity.title.TitleTemplateSimpleImpl;
 import cn.chahuyun.economy.manager.TitleManager;
 import cn.chahuyun.economy.manager.UserManager;
 import cn.chahuyun.economy.plugin.TitleTemplateManager;
+import cn.travellerr.Favorability;
 import cn.travellerr.utils.ImageUtil;
 import cn.travellerr.utils.Log;
 import net.mamoe.mirai.contact.User;
@@ -22,14 +23,16 @@ public class LoveTitleManager {
      * @see TitleTemplateManager#registerTitleTemplate(TitleTemplate[])
      */
     public static void init() {
+        final boolean gradient = Favorability.titleConfig.getGradient();
+        final boolean impactName = Favorability.titleConfig.getImpactName();
         // 注册两个称号模板
         TitleTemplateManager.registerTitleTemplate(
                 new TitleTemplateSimpleImpl(
                         LoveTitleCode.LOVE_CODE[0],
                         LoveTitleCode.LOVE_EXPIRED,
                         "好感20",
-                        true,
-                        false,
+                        gradient,
+                        impactName,
                         "[好感20]",
                         ImageUtil.colorHex(new Color(255, 0, 0)),
                         ImageUtil.colorHex(new Color(255, 221, 0))
@@ -38,8 +41,8 @@ public class LoveTitleManager {
                         LoveTitleCode.LOVE_CODE[1],
                         LoveTitleCode.LOVE_EXPIRED,
                         "好感40",
-                        true,
-                        false,
+                        gradient,
+                        impactName,
                         "[好感40]",
                         ImageUtil.colorHex(new Color(163, 210, 75)),
                         ImageUtil.colorHex(new Color(54, 189, 185))
@@ -48,8 +51,8 @@ public class LoveTitleManager {
                         LoveTitleCode.LOVE_CODE[2],
                         LoveTitleCode.LOVE_EXPIRED,
                         "好感60",
-                        true,
-                        false,
+                        gradient,
+                        impactName,
                         "[好感60]",
                         ImageUtil.colorHex(new Color(75, 210, 174)),
                         ImageUtil.colorHex(new Color(54, 97, 189))
@@ -58,8 +61,8 @@ public class LoveTitleManager {
                         LoveTitleCode.LOVE_CODE[3],
                         LoveTitleCode.LOVE_EXPIRED,
                         "好感80",
-                        true,
-                        false,
+                        gradient,
+                        impactName,
                         "[好感80]",
                         ImageUtil.colorHex(new Color(75, 122, 210)),
                         ImageUtil.colorHex(new Color(185, 54, 189))
@@ -68,8 +71,8 @@ public class LoveTitleManager {
                         LoveTitleCode.LOVE_CODE[4],
                         LoveTitleCode.LOVE_EXPIRED,
                         "好感100",
-                        true,
-                        false,
+                        gradient,
+                        impactName,
                         "[好感100]",
                         ImageUtil.colorHex(new Color(210, 75, 75)),
                         ImageUtil.colorHex(new Color(54, 148, 189))
