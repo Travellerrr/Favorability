@@ -6,6 +6,7 @@ import cn.travellerr.command.RegCommand;
 import cn.travellerr.config.LoveYou;
 import cn.travellerr.config.PluginConfig;
 import cn.travellerr.config.TipsConfig;
+import cn.travellerr.config.TitleConfig;
 import cn.travellerr.title.LoveTitleManager;
 import cn.travellerr.utils.CheckDepends;
 import cn.travellerr.utils.CopyGiftJson;
@@ -23,6 +24,7 @@ public final class Favorability extends JavaPlugin {
     public static PluginConfig config;
     public static TipsConfig msgConfig;
     public static LoveYou loveYou;
+    public static TitleConfig titleConfig;
     public static final String version = "1.1.0";
 
     private Favorability() {
@@ -42,10 +44,12 @@ public final class Favorability extends JavaPlugin {
         reloadPluginConfig(cn.travellerr.config.PluginConfig.INSTANCE);
         reloadPluginConfig(cn.travellerr.config.TipsConfig.INSTANCE);
         reloadPluginConfig(cn.travellerr.config.LoveYou.INSTANCE);
+        reloadPluginConfig(TitleConfig.INSTANCE);
 
         config = cn.travellerr.config.PluginConfig.INSTANCE;
         msgConfig = cn.travellerr.config.TipsConfig.INSTANCE;
         loveYou = cn.travellerr.config.LoveYou.INSTANCE;
+        titleConfig = TitleConfig.INSTANCE;
         RegCommand.INSTANCE.registerCommand();
 
         if (config.getEconomyName() == 0) {
