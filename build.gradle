@@ -13,12 +13,10 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compileOnly "xyz.cssxsh.mirai:mirai-hibernate-plugin:2.8.0"
-    compileOnly "xyz.cssxsh.mirai:mirai-economy-core:latest.release"
+    implementation 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    implementation("cn.chahuyun:hibernate-plus:1.0.16")
     compileOnly "cn.chahuyun:HuYanEconomy:latest.release"
-    //compileOnly files("./libs/HuYanEconomy-0.2.1.mirai2.jar")
-    //compileOnly files("./libs/MiraiDailySign-0.1.1.mirai2.jar")
-
 
     implementation 'com.hankcs:hanlp:portable-1.8.4'
     implementation("org.quartz-scheduler:quartz:2.3.2")

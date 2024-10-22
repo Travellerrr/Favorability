@@ -3,15 +3,9 @@ package cn.travellerr;
 import cn.chahuyun.economy.HuYanEconomy;
 import cn.travellerr.LoveYou.event.GroupMessageEventListener;
 import cn.travellerr.command.RegCommand;
-import cn.travellerr.config.LoveYou;
-import cn.travellerr.config.PluginConfig;
-import cn.travellerr.config.TipsConfig;
-import cn.travellerr.config.TitleConfig;
+import cn.travellerr.config.*;
 import cn.travellerr.title.LoveTitleManager;
-import cn.travellerr.utils.CheckDepends;
-import cn.travellerr.utils.CopyGiftJson;
-import cn.travellerr.utils.EconomyUtil;
-import cn.travellerr.utils.Log;
+import cn.travellerr.utils.*;
 import cn.travellerr.version.CheckLatestVersion;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
@@ -21,10 +15,13 @@ import net.mamoe.mirai.event.GlobalEventChannel;
 
 public final class Favorability extends JavaPlugin {
     public static final Favorability INSTANCE = new Favorability();
+
     public static PluginConfig config;
     public static TipsConfig msgConfig;
     public static LoveYou loveYou;
     public static TitleConfig titleConfig;
+    public static SqlConfig sqlConfig;
+
     public static final String version = "1.1.0";
 
     private Favorability() {
@@ -44,11 +41,13 @@ public final class Favorability extends JavaPlugin {
         reloadPluginConfig(cn.travellerr.config.PluginConfig.INSTANCE);
         reloadPluginConfig(cn.travellerr.config.TipsConfig.INSTANCE);
         reloadPluginConfig(cn.travellerr.config.LoveYou.INSTANCE);
+        reloadPluginConfig(cn.travellerr.config.SqlConfig.INSTANCE);
         reloadPluginConfig(TitleConfig.INSTANCE);
 
         config = cn.travellerr.config.PluginConfig.INSTANCE;
         msgConfig = cn.travellerr.config.TipsConfig.INSTANCE;
         loveYou = cn.travellerr.config.LoveYou.INSTANCE;
+        sqlConfig = SqlConfig.INSTANCE;
         titleConfig = TitleConfig.INSTANCE;
         RegCommand.INSTANCE.registerCommand();
 
@@ -70,7 +69,7 @@ public final class Favorability extends JavaPlugin {
         }
 
 
-
+        HibernateUtil.init(this);
         EconomyUtil.init();
         CheckLatestVersion.init();
         LoveTitleManager.init();
