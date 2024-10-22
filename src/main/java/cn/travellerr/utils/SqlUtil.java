@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class SqlUtil {
    /* public static int itemLevel;
     public static boolean isMaking;

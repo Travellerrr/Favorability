@@ -1,6 +1,7 @@
 package cn.travellerr.utils;
 
 import cn.travellerr.config.PluginConfig;
+import cn.travellerr.entity.Favourite;
 import cn.travellerr.title.LoveTitleManager;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Contact;
@@ -12,12 +13,8 @@ import net.mamoe.mirai.message.data.ForwardMessageBuilder;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static cn.travellerr.Favorability.config;
 import static cn.travellerr.Favorability.msgConfig;
@@ -34,7 +31,8 @@ public class FavorUtil {
      * @author Travellerr
      */
     public static void checkFavor(Contact subject, User user, Bot bot) {
-        int exp = SqlUtil.getExp(user.getId());
+        Favourite userInfo = SqlUtilNew.getInfo(user.getId());
+        long exp = userInfo == null ? 0 : userInfo.getExp();
         String originMsg = msgConfig.getCheckLove();
         long level = FavorLevel(exp);
         originMsg = ReplaceMsg.Replace(originMsg, "%成员%", user.getNick());
@@ -83,7 +81,7 @@ public class FavorUtil {
      * @param exp 好感经验
      * @return 好感等级
      */
-    private static long FavorLevel(long exp) {
+    public static long FavorLevel(long exp) {
         if (exp < 0) {
             return -Math.abs(exp) / config.getNegativeExp();
         }
@@ -106,32 +104,6 @@ public class FavorUtil {
     }
 
     /**
-     * 将未知 列表 转换为 Integer类型 列表
-     * @param list 未知列表
-     * @return 整数列表
-     */
-    private static List<Integer> castIntList(List<?> list) {
-        List<Integer> result = new ArrayList<>();
-        for (Object element : list) {
-            result.add((Integer) element);
-        }
-        return result;
-    }
-
-    /**
-     * 将未知 列表 转换为 Long 列表
-     * @param list 未知列表
-     * @return 长整数列表
-     */
-    private static List<Long> castLongList(List<?> list) {
-        List<Long> result = new ArrayList<>();
-        for (Object element : list) {
-            result.add((Long) element);
-        }
-        return result;
-    }
-
-    /**
      * 获取对应群聊好感排行
      * @author Travellerr
      * @param subject 联系对象
@@ -139,12 +111,12 @@ public class FavorUtil {
      */
     public static void getLoveList(Contact subject, Group group) {
         // 获取数据
-        Map<String, List<?>> info = SqlUtil.getListSql();
-        List<Integer> LoveExpList = castIntList(info.get("expList"));
-        List<Long> uidName = castLongList(info.get("uidName"));
-        Map<Long, Integer> userLoveList = IntStream.range(0, Math.min(uidName.size(), LoveExpList.size()))
-                .boxed()
-                .collect(Collectors.toMap(uidName::get, LoveExpList::get));
+        ArrayList<Favourite> userInfos = SqlUtilNew.getAllInfo();
+
+        ArrayList<Long> uidName = new ArrayList<>();
+        userInfos.forEach(user -> uidName.add(user.getQQ()));
+        Map<Long, Long> exps = new HashMap<>();
+        userInfos.forEach(user -> exps.put(user.getQQ(), user.getExp()));
 
         // 构建消息转发器
         ForwardMessageBuilder forwardMessage = new ForwardMessageBuilder(subject);
@@ -166,7 +138,7 @@ public class FavorUtil {
             messageContent = ReplaceMsg.Replace(messageContent, "%成员%", nickname);
             messageContent = ReplaceMsg.Replace(messageContent, "%后缀%", config.getSuffix());
             messageContent = ReplaceMsg.Replace(messageContent, "%机器人%", subject.getBot().getNick());
-            messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(userLoveList.get(user.getId())));
+            messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(exps.get(user.getId())));
             Message message = new PlainText(messageContent);
             forwardMessage.add(user, message);
         });
@@ -183,22 +155,26 @@ public class FavorUtil {
      */
     public static void getAllLoveList(Contact subject) {
         // 获取数据
-        Map<String, List<?>> info = SqlUtil.getListSql();
-        List<Integer> LoveExpList = castIntList(info.get("expList"));
-        List<Long> uidName = castLongList(info.get("uidName"));
+        ArrayList<Favourite> userInfos = SqlUtilNew.getAllInfo();
+
+        ArrayList<Long> uidName = new ArrayList<>();
+        userInfos.forEach(user -> uidName.add(user.getQQ()));
+        Map<Long, Long> exps = new HashMap<>();
+        userInfos.forEach(user -> exps.put(user.getQQ(), user.getExp()));
 
         // 构建消息转发器
         ForwardMessageBuilder forwardMessage = new ForwardMessageBuilder(subject);
 
         // 确定循环上限
-        int size = Math.min(LoveExpList.size(), 100);
+        int size = Math.min(exps.size(), 100);
         String suffix = config.getSuffix();
         // 遍历并发送消息
         for (int i = 0; i < size; i++) {
+            Long userId = uidName.get(i);
             String messageContent = msgConfig.getTotalLoveMsg() + "\n (" + uidName.get(i) + ")";
-            messageContent = ReplaceMsg.Replace(messageContent, "%成员%", uidName.get(i));
+            messageContent = ReplaceMsg.Replace(messageContent, "%成员%", userId);
             messageContent = ReplaceMsg.Replace(messageContent, "%机器人%", subject.getBot().getNick());
-            messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(LoveExpList.get(i)));
+            messageContent = ReplaceMsg.Replace(messageContent, "%好感%", FavorLevel(exps.get(userId)));
             messageContent = ReplaceMsg.Replace(messageContent, "%后缀%", suffix);
             messageContent = ReplaceMsg.Replace(messageContent, "%排名%", (i + 1));
 
@@ -222,11 +198,11 @@ public class FavorUtil {
      * @param subject 联系对象
      */
     public static void cheatLove(User user, Long exp, Contact subject) {
-        SqlUtil.addLove(exp, user.getId());
+        SqlUtilNew.addLove(user, exp);
         subject.sendMessage(new At(user.getId())
                 .plus("\n作弊成功，增加 " + exp + "经验值\n折合等级约为 ")
                 .plus(FavorLevel(exp) + " 级\n，现在等级为")
-                .plus(FavorLevel(SqlUtil.getExp(user.getId())) + " 级")
+                .plus(FavorLevel(SqlUtilNew.getInfo(user.getId()).getExp()) + " 级")
         );
     }
 }

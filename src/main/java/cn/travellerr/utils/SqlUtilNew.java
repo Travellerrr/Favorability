@@ -7,10 +7,9 @@ import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.entity.Favourite;
 import net.mamoe.mirai.contact.User;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class SqlUtilNew {
 
@@ -138,11 +137,9 @@ public class SqlUtilNew {
      * @return 包含经验值和QQ号的Map
      * @author Travellerr
      */
-    public static Map<Long, Long> getExpList() {
-        List<Favourite> users = HibernateFactory.selectList(Favourite.class);
-        if (users == null) return null;
-        Map<Long, Long> map = new HashMap<>();
-        users.forEach(user -> map.put(user.getQQ(), user.getExp()));
-        return map;
+    public static ArrayList<Favourite> getAllInfo() {
+        ArrayList<Favourite> favourites = (ArrayList<Favourite>) HibernateFactory.selectList(Favourite.class);
+        favourites.sort(Comparator.comparing(Favourite::getExp).reversed());
+        return favourites;
     }
 }
