@@ -16,6 +16,7 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
     implementation("cn.chahuyun:hibernate-plus:1.0.16")
+    compileOnly("xyz.cssxsh.mirai:mirai-economy-core:1.0.6")
     compileOnly "cn.chahuyun:HuYanEconomy:latest.release"
 
     implementation 'com.hankcs:hanlp:portable-1.8.4'

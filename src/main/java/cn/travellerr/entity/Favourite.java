@@ -1,5 +1,6 @@
 package cn.travellerr.entity;
 
+import cn.travellerr.utils.Log;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -35,4 +36,16 @@ public class Favourite {
 
     @Builder.Default
     private Date regTime = new Date(); // 用户注册时间
+
+    public void printAll() {
+        Log.debug("QQ号:" + this.QQ);
+        Log.debug("昵称:" + this.name);
+        Log.debug("好感经验值:" + this.exp);
+        Log.debug("制作时长:" + this.makeTime);
+        Log.debug("物品等级:" + this.itemLevel);
+        Log.debug("是否正在制作:" + this.isMaking);
+        Log.debug("开始制作时间:" + this.startMakeTime);
+        Log.debug("注册时间:" + this.regTime);
+
+    }
 }

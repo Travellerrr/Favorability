@@ -20,21 +20,19 @@ public class SqlUtilNew {
      * @param sender 发送者
      * @param money  金钱
      * @param time   花费时间
-     * @return 是否成功开始制造
      * @author Travellerr
      */
-    public static Boolean startMake(User sender, int money, long time) {
+    public static void startMake(User sender, int money, long time) {
         Long qqNumber = sender.getId();
 
         Favourite user = getInfo(qqNumber);
         if (isQQNumberNew(user)) {
             user = new Favourite(qqNumber, sender.getNick(), 0L, 0L, 0, false, new Date(), new Date());
-        } else if (user.isMaking()) return false;
+        }
         int chance = RandomUtil.randomInt(1, 5001);
         int itemLevel = chance <= money ? 3 : 2;
         //int itemLevel = money >= 200 ? (chance >= 75 ? 3 : 2) : (chance >= 95 ? 3 : 2);
         updateStartMakingData(user, time, itemLevel);
-        return true;
     }
 
     /**
@@ -55,7 +53,8 @@ public class SqlUtilNew {
      * @return 若制造时间已到则返回-1，否则返回具体时间(毫秒)
      * @author Travellerr
      */
-    private static Long isTimesUp(Favourite user, boolean isQuicklyMake) {
+    public static Long isTimesUp(Favourite user, boolean isQuicklyMake) {
+        if (user == null) return -1L;
         Date endTime = DateUtil.offsetSecond(user.getStartMakeTime(), Math.toIntExact(user.getMakeTime()));
 
         if (isQuicklyMake || DateUtil.compare(endTime, new Date()) <= 0) {
@@ -68,15 +67,14 @@ public class SqlUtilNew {
      * 清除用户的制造队列
      *
      * @param user 用户
-     * @return 更新后的用户对象
      * @author Travellerr
      */
-    private static Favourite clearQueue(Favourite user) {
+    public static void clearQueue(Favourite user) {
         user.setMaking(false);
         user.setMakeTime(0L);
         user.setItemLevel(0);
         user.setStartMakeTime(null);
-        return user;
+        saveData(user);
     }
 
     /**
@@ -111,12 +109,17 @@ public class SqlUtilNew {
      *
      * @param user 用户
      * @param exp  经验值
-     * @return 更新后的用户对象
      * @author Travellerr
      */
-    public static Favourite addLove(Favourite user, long exp) {
+    public static void addLove(Favourite user, long exp) {
         user.setExp(user.getExp() + exp);
-        return user;
+        saveData(user);
+    }
+
+    public static void addLove(User sender, long exp) {
+        Favourite user = getInfo(sender.getId());
+        user.setExp(user.getExp() + exp);
+        saveData(user);
     }
 
     /**
