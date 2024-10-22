@@ -5,6 +5,7 @@ import cn.travellerr.title.LoveTitleManager;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;
+import net.mamoe.mirai.contact.Member;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.At;
 import net.mamoe.mirai.message.data.ForwardMessageBuilder;
@@ -149,7 +150,7 @@ public class FavorUtil {
         ForwardMessageBuilder forwardMessage = new ForwardMessageBuilder(subject);
 
         // 获取群成员列表
-        List<User> users = group.getMembers().stream()
+        List<Member> users = group.getMembers().stream()
                 .filter(member -> uidName.contains(member.getId()))
                 .sorted(Comparator.comparingInt(member -> uidName.indexOf(member.getId())))
                 .limit(100)
@@ -157,7 +158,10 @@ public class FavorUtil {
 
         // 遍历并发送消息
         users.forEach(user -> {
-            String nickname = user.getNick();
+            String nickname = user.getNameCard();
+            if (nickname.isEmpty()) {
+                nickname = user.getNick();
+            }
             String messageContent = msgConfig.getGroupLoveMsg();
             messageContent = ReplaceMsg.Replace(messageContent, "%成员%", nickname);
             messageContent = ReplaceMsg.Replace(messageContent, "%后缀%", config.getSuffix());
