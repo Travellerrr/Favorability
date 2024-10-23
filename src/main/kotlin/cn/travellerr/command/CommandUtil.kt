@@ -7,7 +7,7 @@ import cn.travellerr.config.TipsConfig
 import cn.travellerr.config.TitleConfig
 import cn.travellerr.makeMachine.make.MakingMachine
 import cn.travellerr.makeMachine.make.MakingMachine.checkItemQuickly
-import cn.travellerr.utils.DoxxingUtil
+import cn.travellerr.otherFunction.DoxxingUtil
 import cn.travellerr.utils.EconomyUtil
 import cn.travellerr.utils.FavorUtil
 import cn.travellerr.utils.Log

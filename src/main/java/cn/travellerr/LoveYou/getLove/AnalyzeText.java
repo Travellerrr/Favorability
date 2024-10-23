@@ -3,8 +3,8 @@ package cn.travellerr.LoveYou.getLove;
 import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.Favorability;
 import cn.travellerr.LoveYou.utils.LoveSqlUtil;
+import cn.travellerr.utils.FavouriteManager;
 import cn.travellerr.utils.Log;
-import cn.travellerr.utils.SqlUtil;
 import com.hankcs.hanlp.classification.classifiers.IClassifier;
 import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
 import com.hankcs.hanlp.classification.models.NaiveBayesModel;
@@ -100,7 +100,7 @@ public class AnalyzeText {
                     replyMsg = down.get(index);
                 }
 
-                SqlUtil.addLove(ans, event.getSender().getId());
+                FavouriteManager.addLove(event.getSender(), ans);
                 QuoteReply reply = new QuoteReply(event.getMessage());
                 subject.sendMessage(reply.plus(new PlainText(replyMsg + "  \n【变化：" + expChange + "】")));
 

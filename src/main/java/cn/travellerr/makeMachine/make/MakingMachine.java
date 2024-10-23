@@ -80,7 +80,6 @@ public class MakingMachine {
         long time = RandomUtil.randomInt(config.getAtLeastMin(), config.getAtMostMin()) * 60L;
             //int time = 1;
 
-        //SqlUtil.updateInfo(user.getId(), false, false);
         Favourite userInfo = FavouriteManager.getInfo(user.getId());
         if (userInfo != null) {
             if (userInfo.isMaking()) {

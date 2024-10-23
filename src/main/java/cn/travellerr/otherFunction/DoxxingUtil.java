@@ -1,4 +1,4 @@
-package cn.travellerr.utils;
+package cn.travellerr.otherFunction;
 
 import net.mamoe.mirai.contact.*;
 import net.mamoe.mirai.data.UserProfile;
