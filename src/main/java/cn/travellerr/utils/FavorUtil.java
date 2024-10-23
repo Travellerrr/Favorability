@@ -31,7 +31,7 @@ public class FavorUtil {
      * @author Travellerr
      */
     public static void checkFavor(Contact subject, User user, Bot bot) {
-        Favourite userInfo = SqlUtilNew.getInfo(user.getId());
+        Favourite userInfo = FavouriteManager.getInfo(user.getId());
         long exp = userInfo == null ? 0 : userInfo.getExp();
         String originMsg = msgConfig.getCheckLove();
         long level = FavorLevel(exp);
@@ -111,7 +111,7 @@ public class FavorUtil {
      */
     public static void getLoveList(Contact subject, Group group) {
         // 获取数据
-        ArrayList<Favourite> userInfos = SqlUtilNew.getAllInfo();
+        ArrayList<Favourite> userInfos = FavouriteManager.getAllInfo();
 
         ArrayList<Long> uidName = new ArrayList<>();
         userInfos.forEach(user -> uidName.add(user.getQQ()));
@@ -155,7 +155,7 @@ public class FavorUtil {
      */
     public static void getAllLoveList(Contact subject) {
         // 获取数据
-        ArrayList<Favourite> userInfos = SqlUtilNew.getAllInfo();
+        ArrayList<Favourite> userInfos = FavouriteManager.getAllInfo();
 
         ArrayList<Long> uidName = new ArrayList<>();
         userInfos.forEach(user -> uidName.add(user.getQQ()));
@@ -198,11 +198,11 @@ public class FavorUtil {
      * @param subject 联系对象
      */
     public static void cheatLove(User user, Long exp, Contact subject) {
-        SqlUtilNew.addLove(user, exp);
+        FavouriteManager.addLove(user, exp);
         subject.sendMessage(new At(user.getId())
                 .plus("\n作弊成功，增加 " + exp + "经验值\n折合等级约为 ")
                 .plus(FavorLevel(exp) + " 级\n，现在等级为")
-                .plus(FavorLevel(SqlUtilNew.getInfo(user.getId()).getExp()) + " 级")
+                .plus(FavorLevel(FavouriteManager.getInfo(user.getId()).getExp()) + " 级")
         );
     }
 }

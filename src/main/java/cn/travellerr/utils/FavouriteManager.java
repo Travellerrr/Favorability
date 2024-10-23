@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-public class SqlUtilNew {
+public class FavouriteManager {
 
     /**
      * 开始制造物品
