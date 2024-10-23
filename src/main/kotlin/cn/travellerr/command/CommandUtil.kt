@@ -8,6 +8,7 @@ import cn.travellerr.config.TitleConfig
 import cn.travellerr.makeMachine.make.MakingMachine
 import cn.travellerr.makeMachine.make.MakingMachine.checkItemQuickly
 import cn.travellerr.otherFunction.DoxxingUtil
+import cn.travellerr.otherFunction.FixDataBaseTool
 import cn.travellerr.utils.EconomyUtil
 import cn.travellerr.utils.FavorUtil
 import cn.travellerr.utils.Log
@@ -236,7 +237,25 @@ object CreateQuickly : SimpleCommand(
     }
 }
 
+object FixOldDataBase : SimpleCommand(
+    Favorability.INSTANCE,
+    "fixOldDataBase",
+    "修复好感数据库",
+    "修复好感数据",
+    "迁移好感数据",
+    description = "好感数据转移"
+) {
+    @Handler
+    suspend fun use(context: CommandContext) {
+        val sender = context.sender
+        val success = FixDataBaseTool.fixDataBase()
 
+        if (success) {
+            sender.sendMessage("好感数据转移成功")
+        } else {
+            sender.sendMessage("好感数据转移失败")
+        }
 
-
+    }
+}
 

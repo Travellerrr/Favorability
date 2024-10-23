@@ -13,5 +13,6 @@ object RegCommand {
         CommandManager.registerCommand(GetLoveList)
         CommandManager.registerCommand(GetAllLoveList)
         CommandManager.registerCommand(CreateQuickly)
+        CommandManager.registerCommand(FixOldDataBase)
     }
 }
