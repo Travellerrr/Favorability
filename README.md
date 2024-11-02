@@ -10,6 +10,8 @@
 
 本好感度插件兼容 **HuyanEconomy的经济系统** 与 **MiraiDailySign签到插件** , 可以选择使用 `hy-gold` 或 `mirai-coin` 作为消耗货币，在`config.yml`下设置即可，如果有想法的话后续或许能适配更多的经济插件
 
+[常见问题](#FAQ)
+
 ~~（其实就是懒得自建方法）~~
 
 ## 指令
@@ -194,3 +196,10 @@ similarity:
     }
 }
 ```
+
+
+## <span id="FAQ"></span>常见问题
+
+> `E/Favorability: 好感度系统-(certificate_unknown) PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target`
+
+该异常是由于插件运行版本检查时无法找到到请求目标的有效证书路径，意味着它无法验证服务器提供的证书。是在运行时开了watt toolkit等加速器导致网络证书被修改。如果对**版本更新**没有要求的话可以直接忽略该报错，否则请**关闭您的加速器**
