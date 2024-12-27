@@ -22,7 +22,7 @@ public final class Favorability extends JavaPlugin {
     public static TitleConfig titleConfig;
     public static SqlConfig sqlConfig;
 
-    public static final String version = "2.0.0";
+    public static final String version = "2.0.1";
 
     private Favorability() {
         super(new JvmPluginDescriptionBuilder("cn.travellerr.Favorability", version)
