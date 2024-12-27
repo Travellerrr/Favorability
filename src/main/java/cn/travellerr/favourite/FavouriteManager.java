@@ -106,7 +106,16 @@ public class FavouriteManager {
      * @see Favourite
      */
     public static Favourite getInfo(Long qqNumber) {
-        return HibernateFactory.selectOne(Favourite.class, qqNumber);
+        Favourite user = HibernateFactory.selectOne(Favourite.class, qqNumber);
+        if (user == null) {
+            user = Favourite.builder()
+                    .QQ(qqNumber)
+                    .makeTime(0L)
+                    .itemLevel(0)
+                    .isMaking(false)
+                    .build();
+        }
+        return user;
     }
 
     /**
