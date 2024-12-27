@@ -30,7 +30,6 @@ public class FavouriteManager {
      * @param sender 发送者
      * @param money  金钱
      * @param time   花费时间
-     * @author Travellerr
      */
     public static void startMake(User sender, int money, long time) {
         Long qqNumber = sender.getId();
@@ -49,7 +48,6 @@ public class FavouriteManager {
      *
      * @param user 用户
      * @return 是否为最新
-     * @author Travellerr
      */
     private static boolean isQQNumberNew(Favourite user) {
         return user == null;
@@ -60,7 +58,6 @@ public class FavouriteManager {
      *
      * @param user 用户
      * @return 若制造时间已到则返回-1，否则返回具体时间(毫秒)
-     * @author Travellerr
      */
     public static Long isTimesUp(Favourite user, boolean isQuicklyMake) {
         if (user == null) return -1L;
@@ -76,7 +73,6 @@ public class FavouriteManager {
      * 清除用户的制造队列
      *
      * @param user 用户
-     * @author Travellerr
      */
     public static void clearQueue(Favourite user) {
         user.setMaking(false);
@@ -92,7 +88,6 @@ public class FavouriteManager {
      * @param user      用户
      * @param makeTime  制造所需时间
      * @param itemLevel 物品等级
-     * @author Travellerr
      */
     private static void updateStartMakingData(Favourite user, long makeTime, int itemLevel) {
         user.setMakeTime(makeTime);
@@ -107,7 +102,8 @@ public class FavouriteManager {
      *
      * @param qqNumber QQ号
      * @return 用户对象
-     * @author Travellerr
+     *
+     * @see Favourite
      */
     public static Favourite getInfo(Long qqNumber) {
         return HibernateFactory.selectOne(Favourite.class, qqNumber);
@@ -118,10 +114,11 @@ public class FavouriteManager {
      *
      * @param user 用户
      * @param exp  经验值
-     * @author Travellerr
+     *
+     * @see Favourite
      */
     public static void addLove(Favourite user, long exp) {
-        user.setExp(user.getExp() + exp);
+        user.addExp(exp);
         saveData(user);
     }
 
@@ -130,10 +127,12 @@ public class FavouriteManager {
      *
      * @param sender 发送者
      * @param exp    经验值
+     *
+     * @see Favourite
      */
     public static void addLove(User sender, long exp) {
         Favourite user = getInfo(sender.getId());
-        user.setExp(user.getExp() + exp);
+        user.addExp(exp);
         saveData(user);
     }
 
@@ -141,7 +140,6 @@ public class FavouriteManager {
      * 保存用户数据
      *
      * @param user 用户
-     * @author Travellerr
      */
     public static void saveData(Favourite user) {
         HibernateFactory.merge(user);
@@ -151,7 +149,6 @@ public class FavouriteManager {
      * 获取经验值列表
      *
      * @return 包含经验值和QQ号的Map
-     * @author Travellerr
      */
     public static ArrayList<Favourite> getAllInfo() {
         ArrayList<Favourite> favourites = (ArrayList<Favourite>) HibernateFactory.selectList(Favourite.class);

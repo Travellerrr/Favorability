@@ -1,5 +1,6 @@
 package cn.travellerr.entity;
 
+import cn.travellerr.favourite.FavouriteManager;
 import cn.travellerr.utils.Log;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -8,6 +9,11 @@ import lombok.*;
 
 import java.util.Date;
 
+/**
+ * 用户好感实体类
+ *
+ * @see FavouriteManager
+ */
 @Entity
 @Table
 @Getter
@@ -47,5 +53,18 @@ public class Favourite {
         Log.debug("开始制作时间:" + this.startMakeTime);
         Log.debug("注册时间:" + this.regTime);
 
+    }
+
+    /**
+     * 添加好感经验值(不保存)
+     * <br>
+     * 如若使用此方法，请在最后调用 {@link FavouriteManager#saveData(Favourite)}
+     * <br>
+     * 或者使用 {@link FavouriteManager#addLove(Favourite, long)}
+     *
+     * @param exp 好感经验值
+     */
+    public void addExp(Long exp) {
+        this.exp += exp;
     }
 }
