@@ -4,6 +4,7 @@ import net.mamoe.mirai.console.data.AutoSavePluginConfig
 import net.mamoe.mirai.console.data.ValueDescription
 import net.mamoe.mirai.console.data.value
 
+@Deprecated("2024/12/27 附加功能将不再维护！", level = DeprecationLevel.WARNING)
 object LoveYou : AutoSavePluginConfig("LoveYouConfig") {
     @ValueDescription("是否启用LoveYou")
     val enable: Boolean by value(false)

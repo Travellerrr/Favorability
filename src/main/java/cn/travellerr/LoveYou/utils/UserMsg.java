@@ -5,6 +5,7 @@ import cn.travellerr.utils.Log;
 
 import static cn.travellerr.Favorability.loveYou;
 
+@Deprecated(since = "2024/12/27 附加功能将不再维护！", forRemoval = false)
 public class UserMsg {
     private String msg;
 

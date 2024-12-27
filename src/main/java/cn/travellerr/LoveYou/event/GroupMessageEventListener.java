@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import static cn.travellerr.Favorability.loveYou;
 
+@Deprecated(since = "2024/12/27 附加功能将不再维护！", forRemoval = false)
 public class GroupMessageEventListener extends SimpleListenerHost {
 
     long[] enableGroup = loveYou.getEnableGroup();

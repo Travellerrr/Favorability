@@ -3,7 +3,7 @@ package cn.travellerr.LoveYou.getLove;
 import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.Favorability;
 import cn.travellerr.LoveYou.utils.LoveSqlUtil;
-import cn.travellerr.utils.FavouriteManager;
+import cn.travellerr.favourite.FavouriteManager;
 import cn.travellerr.utils.Log;
 import com.hankcs.hanlp.classification.classifiers.IClassifier;
 import com.hankcs.hanlp.classification.classifiers.NaiveBayesClassifier;
@@ -28,6 +28,7 @@ import static cn.travellerr.Favorability.loveYou;
  *
  * @author Travellerr
  */
+@Deprecated(since = "2024/12/27 附加功能将不再维护！", forRemoval = false)
 public class AnalyzeText {
 
 
