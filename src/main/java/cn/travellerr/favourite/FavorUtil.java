@@ -1,8 +1,9 @@
-package cn.travellerr.utils;
+package cn.travellerr.favourite;
 
 import cn.travellerr.config.PluginConfig;
 import cn.travellerr.entity.Favourite;
 import cn.travellerr.title.LoveTitleManager;
+import cn.travellerr.utils.ReplaceMsg;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.Group;

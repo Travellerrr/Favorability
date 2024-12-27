@@ -5,12 +5,11 @@ import cn.travellerr.config.LoveYou
 import cn.travellerr.config.PluginConfig
 import cn.travellerr.config.TipsConfig
 import cn.travellerr.config.TitleConfig
-import cn.travellerr.makeMachine.make.MakingMachine
-import cn.travellerr.makeMachine.make.MakingMachine.checkItemQuickly
+import cn.travellerr.favourite.FavorUtil
+import cn.travellerr.favourite.make.MakingMachine
+import cn.travellerr.favourite.make.MakingMachine.checkItemQuickly
 import cn.travellerr.otherFunction.DoxxingUtil
-import cn.travellerr.otherFunction.FixDataBaseTool
 import cn.travellerr.utils.EconomyUtil
-import cn.travellerr.utils.FavorUtil
 import cn.travellerr.utils.Log
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.console.command.*
@@ -104,9 +103,7 @@ object DoxxingOthers : SimpleCommand(Favorability.INSTANCE, "Doxxing", "盒", de
         val group: Group? = context.sender.getGroupOrNull()
         DoxxingUtil.useToOther(subject, sender, group, qqId)
     }
-}
 
-object Doxxing : SimpleCommand(Favorability.INSTANCE, "DoxxingMe", "盒我", description = "写这个功能纯属脑子有病") {
     @Handler
     fun use(context: CommandContext) {
         val subject: Contact? = context.sender.subject
@@ -146,6 +143,14 @@ object Debug : CompositeCommand(Favorability.INSTANCE, "Favor", description = "�
     fun cheatLoveExp(context: CommandContext, exp: Long) {
         val subject: Contact? = context.sender.subject
         val user: User? = context.sender.user
+        FavorUtil.cheatLove(user, exp, subject)
+    }
+
+    @SubCommand("cheatLoveExp", "好感增加", "好感度增加", "好感作弊")
+    @Description("强制增加/减少好感度")
+    fun cheatLoveExp(context: CommandContext, at: At, exp: Long) {
+        val subject: Contact? = context.sender.subject
+        val user: User = context.sender.getGroupOrNull()?.getMember(at.target)!!
         FavorUtil.cheatLove(user, exp, subject)
     }
 }
@@ -237,7 +242,8 @@ object CreateQuickly : SimpleCommand(
     }
 }
 
-object FixOldDataBase : SimpleCommand(
+
+/*object FixOldDataBase : SimpleCommand(
     Favorability.INSTANCE,
     "fixOldDataBase",
     "修复好感数据库",
@@ -259,3 +265,4 @@ object FixOldDataBase : SimpleCommand(
     }
 }
 
+*/

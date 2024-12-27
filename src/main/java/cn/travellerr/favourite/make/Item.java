@@ -1,4 +1,4 @@
-package cn.travellerr.makeMachine.make;
+package cn.travellerr.favourite.make;
 
 public class Item {
 

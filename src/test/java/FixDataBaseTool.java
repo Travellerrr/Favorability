@@ -1,8 +1,6 @@
-package cn.travellerr.otherFunction;
-
 import cn.travellerr.Favorability;
 import cn.travellerr.entity.Favourite;
-import cn.travellerr.utils.FavouriteManager;
+import cn.travellerr.favourite.FavouriteManager;
 
 import java.nio.file.Paths;
 import java.sql.Connection;

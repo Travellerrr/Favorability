@@ -1,4 +1,4 @@
-package cn.travellerr.makeMachine.make;
+package cn.travellerr.favourite.make;
 
 //import cn.chahuyun.economy.utils.EconomyUtil;
 
@@ -7,8 +7,8 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.travellerr.config.PluginConfig;
 import cn.travellerr.entity.Favourite;
+import cn.travellerr.favourite.FavouriteManager;
 import cn.travellerr.utils.EconomyUtil;
-import cn.travellerr.utils.FavouriteManager;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.contact.User;
 import net.mamoe.mirai.message.data.At;

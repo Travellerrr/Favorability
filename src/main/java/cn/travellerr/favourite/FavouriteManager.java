@@ -1,4 +1,4 @@
-package cn.travellerr.utils;
+package cn.travellerr.favourite;
 
 import cn.chahuyun.hibernateplus.HibernateFactory;
 import cn.hutool.core.date.DateUnit;
@@ -11,6 +11,17 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
+/**
+ * 用户好感度管理器
+ *
+ * @author Travellerr
+ * @see cn.travellerr.entity.Favourite
+ * @see FavouriteManager#addLove(User, long)
+ * @see FavouriteManager#addLove(Favourite, long)
+ * @see FavouriteManager#getInfo(Long)
+ * @see FavouriteManager#getAllInfo()
+ * @see FavouriteManager#saveData(Favourite)
+ */
 public class FavouriteManager {
 
     /**
@@ -30,7 +41,6 @@ public class FavouriteManager {
         }
         int chance = RandomUtil.randomInt(1, 5001);
         int itemLevel = chance <= money ? 3 : 2;
-        //int itemLevel = money >= 200 ? (chance >= 75 ? 3 : 2) : (chance >= 95 ? 3 : 2);
         updateStartMakingData(user, time, itemLevel);
     }
 
@@ -115,6 +125,12 @@ public class FavouriteManager {
         saveData(user);
     }
 
+    /**
+     * 增加用户的经验值
+     *
+     * @param sender 发送者
+     * @param exp    经验值
+     */
     public static void addLove(User sender, long exp) {
         Favourite user = getInfo(sender.getId());
         user.setExp(user.getExp() + exp);

@@ -1,4 +1,4 @@
-package cn.travellerr.makeMachine.make;
+package cn.travellerr.favourite.make;
 
 import cn.hutool.core.util.RandomUtil;
 import com.google.gson.JsonElement;

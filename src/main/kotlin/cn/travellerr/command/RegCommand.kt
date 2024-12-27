@@ -7,12 +7,10 @@ object RegCommand {
         CommandManager.registerCommand(CheckMake)
         CommandManager.registerCommand(CheckLove)
         CommandManager.registerCommand(Make)
-        CommandManager.registerCommand(Doxxing)
         CommandManager.registerCommand(DoxxingOthers)
         CommandManager.registerCommand(Debug)
         CommandManager.registerCommand(GetLoveList)
         CommandManager.registerCommand(GetAllLoveList)
         CommandManager.registerCommand(CreateQuickly)
-        CommandManager.registerCommand(FixOldDataBase)
     }
 }
