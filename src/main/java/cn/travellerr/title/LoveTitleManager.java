@@ -8,7 +8,6 @@ import cn.chahuyun.economy.manager.TitleManager;
 import cn.chahuyun.economy.manager.UserManager;
 import cn.chahuyun.economy.plugin.TitleTemplateManager;
 import cn.travellerr.Favorability;
-import cn.travellerr.utils.ImageUtil;
 import cn.travellerr.utils.Log;
 import net.mamoe.mirai.contact.User;
 
@@ -34,8 +33,8 @@ public class LoveTitleManager {
                         gradient,
                         impactName,
                         "[好感20]",
-                        ImageUtil.colorHex(new Color(255, 0, 0)),
-                        ImageUtil.colorHex(new Color(255, 221, 0))
+                        new Color(255, 0, 0),
+                        new Color(255, 221, 0)
                 ),
                 new TitleTemplateSimpleImpl(
                         LoveTitleCode.LOVE_CODE[1],
@@ -44,8 +43,8 @@ public class LoveTitleManager {
                         gradient,
                         impactName,
                         "[好感40]",
-                        ImageUtil.colorHex(new Color(163, 210, 75)),
-                        ImageUtil.colorHex(new Color(54, 189, 185))
+                        new Color(163, 210, 75),
+                        new Color(54, 189, 185)
                 ),
                 new TitleTemplateSimpleImpl(
                         LoveTitleCode.LOVE_CODE[2],
@@ -54,8 +53,8 @@ public class LoveTitleManager {
                         gradient,
                         impactName,
                         "[好感60]",
-                        ImageUtil.colorHex(new Color(75, 210, 174)),
-                        ImageUtil.colorHex(new Color(54, 97, 189))
+                        new Color(75, 210, 174),
+                        new Color(54, 97, 189)
                 ),
                 new TitleTemplateSimpleImpl(
                         LoveTitleCode.LOVE_CODE[3],
@@ -64,8 +63,8 @@ public class LoveTitleManager {
                         gradient,
                         impactName,
                         "[好感80]",
-                        ImageUtil.colorHex(new Color(75, 122, 210)),
-                        ImageUtil.colorHex(new Color(185, 54, 189))
+                        new Color(75, 122, 210),
+                        new Color(185, 54, 189)
                 ),
                 new TitleTemplateSimpleImpl(
                         LoveTitleCode.LOVE_CODE[4],
@@ -74,8 +73,8 @@ public class LoveTitleManager {
                         gradient,
                         impactName,
                         "[好感100]",
-                        ImageUtil.colorHex(new Color(210, 75, 75)),
-                        ImageUtil.colorHex(new Color(54, 148, 189))
+                        new Color(210, 75, 75),
+                        new Color(54, 148, 189)
                 )
         );
     }

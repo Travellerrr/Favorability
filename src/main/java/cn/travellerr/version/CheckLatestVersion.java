@@ -41,6 +41,7 @@ public class CheckLatestVersion {
                         if (updateMsg != null) {
                             updateMsg = updateMsg.replace("#", "");
                             updateMsg = updateMsg.replace("\r\n", " ");
+                            updateMsg = updateMsg.replaceAll("http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?", "");
                             Log.warning(updateMsg);
                             /*
                             闲得没事干了我
