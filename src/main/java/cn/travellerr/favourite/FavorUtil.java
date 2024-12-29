@@ -129,6 +129,11 @@ public class FavorUtil {
                 .limit(100)
                 .collect(Collectors.toList());
 
+        if (users.isEmpty()) {
+            subject.sendMessage("群内没有绑定好感度的成员哦！");
+            return;
+        }
+
         // 遍历并发送消息
         users.forEach(user -> {
             String nickname = user.getNameCard();
@@ -162,6 +167,11 @@ public class FavorUtil {
         userInfos.forEach(user -> uidName.add(user.getQQ()));
         Map<Long, Long> exps = new HashMap<>();
         userInfos.forEach(user -> exps.put(user.getQQ(), user.getExp()));
+
+        if (uidName.isEmpty()) {
+            subject.sendMessage("数据库中没有绑定好感度的成员哦！");
+            return;
+        }
 
         // 构建消息转发器
         ForwardMessageBuilder forwardMessage = new ForwardMessageBuilder(subject);
