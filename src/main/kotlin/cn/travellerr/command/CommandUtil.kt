@@ -1,7 +1,6 @@
 package cn.travellerr.command
 
 import cn.travellerr.Favorability
-import cn.travellerr.config.LoveYou
 import cn.travellerr.config.PluginConfig
 import cn.travellerr.config.TipsConfig
 import cn.travellerr.config.TitleConfig
@@ -126,7 +125,6 @@ object Debug : CompositeCommand(Favorability.INSTANCE, "Favor", description = "�
         Log.warning("正在重新加载配置文件! 部分配置需要重新启动才能生效! ")
         Favorability.INSTANCE.reloadPluginConfig(TipsConfig)
         Favorability.INSTANCE.reloadPluginConfig(PluginConfig)
-        Favorability.INSTANCE.reloadPluginConfig(LoveYou)
         Favorability.INSTANCE.reloadPluginConfig(TitleConfig)
         EconomyUtil.init()
         Log.info("重载完成!")
