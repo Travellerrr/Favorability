@@ -60,7 +60,7 @@ public class FavouriteManager {
      * @return 若制造时间已到则返回-1，否则返回具体时间(毫秒)
      */
     public static Long isTimesUp(Favourite user, boolean isQuicklyMake) {
-        if (user == null) return -1L;
+        if (user == null || !user.isMaking() || user.getMakeTime() == 0) return -1L;
         Date endTime = DateUtil.offsetSecond(user.getStartMakeTime(), Math.toIntExact(user.getMakeTime()));
 
         if (isQuicklyMake || DateUtil.compare(endTime, new Date()) <= 0) {
